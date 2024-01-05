@@ -1,15 +1,15 @@
 // ignore_for_file: empty_catches, avoid_print
 
+import 'package:devil/services/api.dart';
+import 'package:devil/services/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); // 추가
-  //print(await KakaoSdk.origin);
+  print(await KakaoSdk.origin);
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env['nativeKey'],
@@ -89,44 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> signInWithKakao() async {
-    if (await isKakaoTalkInstalled()) {
-      try {
-        await UserApi.instance.loginWithKakaoTalk();
-      } catch (error) {
-        if (error is PlatformException && error.code == 'CANCELED') {
-          print("platformException");
-          return;
-        }
-        try {
-          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-          await UserApi.instance.loginWithKakaoAccount();
-          final user = await UserApi.instance.me();
-          print('User Name: ${user.kakaoAccount!.profile!.nickname}');
-          print('token: $token');
-        } catch (error) {
-          print('Kakao login error: $error');
-        }
-      }
-    } else {
-      try {
-        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        await UserApi.instance.loginWithKakaoAccount();
-        final user = await UserApi.instance.me();
-        print('User Name: ${user.kakaoAccount!.profile!.nickname}');
-        print('token: $token');
-      } catch (error) {
-        print('Kakao login error: $error');
-      }
-    }
-  }
-
-  Future<void> _loginWithKakaoAccountFallback() async {
-    try {
-      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-    } catch (error) {}
-  }
-
   // void getUserInfo() async {
   //   try {
   //     User user = await UserApi.instance.me();
@@ -182,10 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            OutlinedButton(onPressed: () {}, child: const Text("Google로 시작하기")),
-            OutlinedButton(
-                onPressed: () {
-                  signInWithKakao();
+            ...LoginPlatform.values.map((e) => OutlinedButton(
+                onPressed: () async {
+                  await API.auth.login(e);
                 },
                 child: Text("${e.locale}로 시작하기"))),
           ],

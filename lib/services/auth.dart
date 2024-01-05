@@ -6,7 +6,7 @@ class AuthAPI extends API {
   const AuthAPI();
 
   Future<void> login(LoginPlatform platform) async {
-    final token = await platform.service!.login();
+    final token = await platform.service.login();
     final url = dotenv.get('API_AUTH');
 
     final response = await request(
