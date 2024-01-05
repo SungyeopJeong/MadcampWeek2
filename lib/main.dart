@@ -1,6 +1,10 @@
+import 'package:devil/services/api.dart';
+import 'package:devil/services/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 
@@ -112,16 +116,11 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            OutlinedButton(
-                onPressed: () {
-                  /* TODO */
+            ...LoginPlatform.values.map((e) => OutlinedButton(
+                onPressed: () async {
+                  await API.auth.login(e);
                 },
-                child: const Text("Google로 시작하기")),
-            OutlinedButton(
-                onPressed: () {
-                  /* TODO */
-                },
-                child: const Text("카카오로 시작하기"))
+                child: Text("${e.locale}로 시작하기"))),
           ],
         ),
       ),
