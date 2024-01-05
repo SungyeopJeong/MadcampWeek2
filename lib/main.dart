@@ -8,6 +8,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); // 추가
+  //print(await KakaoSdk.origin);
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env['nativeKey'],
@@ -97,22 +98,32 @@ class _MyHomePageState extends State<MyHomePage> {
           return;
         }
         try {
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           await UserApi.instance.loginWithKakaoAccount();
           final user = await UserApi.instance.me();
           print('User Name: ${user.kakaoAccount!.profile!.nickname}');
+          print('token: $token');
         } catch (error) {
           print('Kakao login error: $error');
         }
       }
     } else {
       try {
+        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
         await UserApi.instance.loginWithKakaoAccount();
         final user = await UserApi.instance.me();
         print('User Name: ${user.kakaoAccount!.profile!.nickname}');
+        print('token: $token');
       } catch (error) {
         print('Kakao login error: $error');
       }
     }
+  }
+
+  Future<void> _loginWithKakaoAccountFallback() async {
+    try {
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+    } catch (error) {}
   }
 
   // void getUserInfo() async {
