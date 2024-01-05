@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); // 추가
 
   KakaoSdk.init(
-    nativeAppKey: 'c27bbf998c18be4d84f72534f2e41679',
-    javaScriptAppKey: '5ef19b75c0f64e219da8d908492bd735',
+    nativeAppKey: dotenv.env['nativeKey'],
+    javaScriptAppKey: dotenv.env['jsKey'],
   );
 
   runApp(const MyApp());
