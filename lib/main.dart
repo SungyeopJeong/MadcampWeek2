@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -186,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   signInWithKakao();
                 },
-                child: const Text("카카오로 시작하기"))
+                child: Text("${e.locale}로 시작하기"))),
           ],
         ),
       ),
