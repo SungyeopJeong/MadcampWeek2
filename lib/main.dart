@@ -1,17 +1,34 @@
+// ignore_for_file: empty_catches, avoid_print
+
 import 'package:devil/services/api.dart';
 import 'package:devil/services/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 void main() async {
-  await dotenv.load();
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); // 추가
+  print(await KakaoSdk.origin);
+
+  KakaoSdk.init(
+    nativeAppKey: dotenv.env['nativeKey'],
+    javaScriptAppKey: dotenv.env['jsKey'],
+  );
+
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  String username = '';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -71,6 +88,17 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+
+  // void getUserInfo() async {
+  //   try {
+  //     User user = await UserApi.instance.me();
+  //     print('사용자 정보 요청 성공'
+  //         '\n회원번호: ${user.id}'
+  //         '\n닉네임: ${user.kakaoAccount?.profile?.nickname}');
+  //   } catch (error) {
+  //     print('사용자 정보 요청 실패 $error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
