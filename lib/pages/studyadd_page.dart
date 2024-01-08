@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'dart:convert';
+import 'package:devil/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,82 +13,208 @@ class StudyAdd extends StatefulWidget {
 }
 
 class _StudyAddState extends State<StudyAdd> {
-  // Controller for text fields
+  final String userid = "7";
   final TextEditingController _studyNameController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _participantsController = TextEditingController();
+  String selectedCategory = ""; // Added variable to store the selected category
+  final List<String> categories = ["Frontend", "Backend", "App", "etc"];
+
+  Future<void> _submitStudy() async {
+    String url = 'http://10.0.2.2:3000/api/study';
+
+    Map<String, dynamic> studyData = {
+      'name': _studyNameController.text,
+      'category': selectedCategory,
+      'description': _descriptionController.text,
+      'max': int.tryParse(_participantsController.text),
+      'creatorid': userid,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode(studyData),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        print('Study added successfully');
+      }
+    } catch (e) {
+      print('Error: $e');
+      if (e is http.ClientException) {
+        print('Response body: ${e.message}');
+      }
+    }
+
+    // Clear text field controllers
+    _studyNameController.clear();
+    _descriptionController.clear();
+    _participantsController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            Colors.transparent, // Set app bar background to transparent
-        elevation: 0, // Remove app bar shadow
+        backgroundColor: Colors.transparent, // 투명 배경
+        elevation: 0, // 그림자 효과 제거
+
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black, // Set back button color to black
-          ),
+          icon: const Icon(Icons.arrow_back,
+              color: Colors.black), // 뒤로가기 버튼 색상을 검은색으로 설정
           onPressed: () {
-            Navigator.of(context).pop(); // Handle back button press
+            Navigator.pop(context);
           },
         ),
+        title: const Text(
+          'STUDY 등록하기',
+          style: TextStyle(
+            fontSize: 23,
+            color: Colors.black,
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Study Name
+              const Text(
+                '스터디 분야',
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 18.0),
+              GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 2.3,
+                ),
+                itemCount: categories.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        if (selectedCategory == categories[index]) {
+                          selectedCategory = "";
+                        } else {
+                          selectedCategory = categories[index];
+                        }
+                        print(selectedCategory);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: selectedCategory == categories[index]
+                          ? Colors.black
+                          : Colors.white,
+                      minimumSize: const Size(100, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            12.0), // 원하는 테두리의 반지름 값을 지정하세요.
+                        side: const BorderSide(
+                            color: Color(0xFF1E1C1D)), // 테두리의 색상을 지정하세요.
+                      ),
+                    ),
+                    child: Text(
+                      categories[index],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: selectedCategory == categories[index]
+                            ? Colors.white
+                            : const Color(0xFF1E1C1D),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 24.0),
+              const Text(
+                '스터디 이름',
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 18.0),
               TextField(
                 controller: _studyNameController,
-                decoration: const InputDecoration(labelText: 'Study Name'),
+                decoration: InputDecoration(
+                  hintText: 'Study Name', // Use hintText instead of labelText
+                  filled: true,
+                  fillColor: const Color(0xFFE8E8E8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
-              const SizedBox(height: 16.0),
-
-              // Category
-              TextField(
-                controller: _categoryController,
-                decoration: const InputDecoration(labelText: 'Category'),
+              const SizedBox(height: 24.0),
+              const Text(
+                '스터디 설명',
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16.0),
-
-              // Description
+              const SizedBox(height: 18.0),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: 'Study Description',
+                  filled: true,
+                  fillColor: const Color(0xFFE8E8E8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                maxLines: 1,
               ),
-              const SizedBox(height: 16.0),
-
-              // Participants
+              const SizedBox(height: 24.0),
+              const Text(
+                '스터디 인원',
+                style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 18.0),
               TextField(
                 controller: _participantsController,
-                decoration: const InputDecoration(labelText: 'Participants'),
+                decoration: InputDecoration(
+                  hintText: 'Participants',
+                  filled: true,
+                  fillColor: const Color(0xFFE8E8E8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 16.0),
-
-              // Button to submit
-              ElevatedButton(
-                onPressed: () {
-                  // Handle the submission logic here
-                  String studyName = _studyNameController.text;
-                  String category = _categoryController.text;
-                  String description = _descriptionController.text;
-                  int participants =
-                      int.tryParse(_participantsController.text) ?? 0;
-
-                  // Clear text field controllers
-                  _studyNameController.clear();
-                  _categoryController.clear();
-                  _descriptionController.clear();
-                  _participantsController.clear();
-                },
-                child: const Text('Submit'),
+              const SizedBox(height: 30.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await _submitStudy();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MainPage()),
+                        (route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        '스터디 등록하기',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

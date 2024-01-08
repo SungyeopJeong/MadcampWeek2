@@ -14,6 +14,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late Future<dynamic> studyData;
+  String selectedCategory = ""; // Added variable to store the selected category
+  final List<String> categories = ["Frontend", "Backend", "App", "etc"];
 
   @override
   void initState() {
@@ -33,6 +35,9 @@ class _MainPageState extends State<MainPage> {
         final instance = StudyModel.fromJson(study);
         resultList.add(instance);
       }
+
+      resultList = resultList.reversed.toList(); //촤신순
+
       return resultList;
     } else {
       // API 호출이 실패하면 에러 메시지를 반환
@@ -49,11 +54,13 @@ class _MainPageState extends State<MainPage> {
         leading: const Icon(
           Icons.home, // 집 모양의 아이콘
           color: Colors.black, // 아이콘의 색상
+          size: 40,
         ),
         title: const Text(
-          'Study',
+          'STUDY',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w900,
+            fontSize: 23,
             color: Colors.black,
           ),
         ),

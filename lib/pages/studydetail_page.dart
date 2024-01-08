@@ -65,12 +65,12 @@ class _StudydetailState extends State<Studydetail> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20),
                       Text(
                         widget.description,
                         style: const TextStyle(fontSize: 18),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 40),
                       const Text(
                         '스터디 분야',
                         style: TextStyle(
@@ -81,7 +81,7 @@ class _StudydetailState extends State<Studydetail> {
                         widget.category,
                         style: const TextStyle(fontSize: 18),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 40),
                       const Text(
                         '스터디 인원',
                         style: TextStyle(
@@ -92,7 +92,7 @@ class _StudydetailState extends State<Studydetail> {
                         style: const TextStyle(fontSize: 18),
                       ),
                       const SizedBox(
-                        height: 40,
+                        height: 60,
                       ),
                       ElevatedButton(
                         onPressed: () {
