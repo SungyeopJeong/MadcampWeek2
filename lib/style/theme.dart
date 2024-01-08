@@ -4,6 +4,6 @@ import 'package:flutter/material.dart';
 class DevilTheme {
   static final theme = ThemeData(
     fontFamily: 'Pretendard',
-    scaffoldBackgroundColor: DevilColor.white,
+    scaffoldBackgroundColor: DevilColor.bg,
   );
 }

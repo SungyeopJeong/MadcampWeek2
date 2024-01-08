@@ -41,8 +41,11 @@ class MyPage extends StatelessWidget {
           const Spacer(flex: 2),
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: DevilColor.lightgrey),
+              color: DevilColor.white,
               borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(color: DevilColor.lightgrey, blurRadius: 4.0)
+              ]
             ),
             child: Image.asset(
               "assets/images/logo.png",
@@ -53,12 +56,12 @@ class MyPage extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'DeVil',
-            style: DevilText.title,
+            style: DevilText.titleM,
           ),
           const SizedBox(height: 4),
           Text(
             "페이지를 이용하기 위해 로그인이 필요합니다.",
-            style: DevilText.light.copyWith(color: DevilColor.grey),
+            style: DevilText.labelL.copyWith(color: DevilColor.grey),
           ),
           const Spacer(flex: 1),
           () {
@@ -96,7 +99,7 @@ class MyPage extends StatelessWidget {
                     backgroundColor: DevilColor.black,
                     content: Text(
                       "로그인에 실패했습니다",
-                      style: DevilText.medium.copyWith(color: DevilColor.point),
+                      style: DevilText.bodyM.copyWith(color: DevilColor.point),
                     ),
                   ),
                 );
@@ -117,7 +120,7 @@ class MyPage extends StatelessWidget {
                 const SizedBox(width: 16),
                 Text(
                   "${platform.locale}로 로그인하기",
-                  style: DevilText.body,
+                  style: DevilText.bodyM,
                 ),
               ],
             ),
