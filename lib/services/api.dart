@@ -1,4 +1,5 @@
 import 'package:devil/services/auth.dart';
+import 'package:devil/services/study.dart';
 import 'package:http/http.dart';
 
 enum HttpMethod {
@@ -16,9 +17,14 @@ class API {
   const API();
 
   static const auth = AuthAPI();
+  static const study = StudyAPI();
 
-  Future<Response> request(String url, HttpMethod method,
-      {String? token, Map<String, dynamic>? body}) async {
+  Future<Response> request(
+    String url,
+    HttpMethod method, {
+    String? token,
+    Map<String, dynamic>? body,
+  }) async {
     try {
       final headers = {if (token != null) 'Authorization': 'Bearer $token'};
 

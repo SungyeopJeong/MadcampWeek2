@@ -1,61 +1,29 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
-import 'dart:convert';
+import 'package:devil/models/study.dart';
 import 'package:devil/pages/main_page.dart';
+import 'package:devil/viewmodels/info_model.dart';
+import 'package:devil/viewmodels/study_model.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-class StudyAdd extends StatefulWidget {
-  const StudyAdd({Key? key}) : super(key: key);
+class StudyAddPage extends StatefulWidget {
+  const StudyAddPage({Key? key}) : super(key: key);
 
   @override
-  State<StudyAdd> createState() => _StudyAddState();
+  State<StudyAddPage> createState() => _StudyAddState();
 }
 
-class _StudyAddState extends State<StudyAdd> {
-  final String userid = "7";
+class _StudyAddState extends State<StudyAddPage> {
   final TextEditingController _studyNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _participantsController = TextEditingController();
-  String selectedCategory = ""; // Added variable to store the selected category
-  final List<String> categories = ["Frontend", "Backend", "App", "etc"];
-
-  Future<void> _submitStudy() async {
-    String url = 'http://10.0.2.2:3000/api/study';
-
-    Map<String, dynamic> studyData = {
-      'name': _studyNameController.text,
-      'category': selectedCategory,
-      'description': _descriptionController.text,
-      'max': int.tryParse(_participantsController.text),
-      'creatorid': userid,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        body: jsonEncode(studyData),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        print('Study added successfully');
-      }
-    } catch (e) {
-      print('Error: $e');
-      if (e is http.ClientException) {
-        print('Response body: ${e.message}');
-      }
-    }
-
-    // Clear text field controllers
-    _studyNameController.clear();
-    _descriptionController.clear();
-    _participantsController.clear();
-  }
+  StudyCategory?
+      selectedCategory; // Added variable to store the selected category
 
   @override
   Widget build(BuildContext context) {
+    const categories = StudyCategory.values;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent, // 투명 배경
@@ -97,11 +65,12 @@ class _StudyAddState extends State<StudyAdd> {
                 itemCount: categories.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  final isSelected = selectedCategory == categories[index];
                   return ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        if (selectedCategory == categories[index]) {
-                          selectedCategory = "";
+                        if (isSelected) {
+                          selectedCategory = null;
                         } else {
                           selectedCategory = categories[index];
                         }
@@ -109,9 +78,7 @@ class _StudyAddState extends State<StudyAdd> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedCategory == categories[index]
-                          ? Colors.black
-                          : Colors.white,
+                      backgroundColor: isSelected ? Colors.black : Colors.white,
                       minimumSize: const Size(100, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
@@ -121,12 +88,11 @@ class _StudyAddState extends State<StudyAdd> {
                       ),
                     ),
                     child: Text(
-                      categories[index],
+                      categories[index].locale,
                       style: TextStyle(
                         fontSize: 16,
-                        color: selectedCategory == categories[index]
-                            ? Colors.white
-                            : const Color(0xFF1E1C1D),
+                        color:
+                            isSelected ? Colors.white : const Color(0xFF1E1C1D),
                       ),
                     ),
                   );
@@ -195,7 +161,23 @@ class _StudyAddState extends State<StudyAdd> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await _submitStudy();
+                      final study = Study(
+                        name: _studyNameController.text,
+                        category: selectedCategory?.locale ?? "",
+                        description: _descriptionController.text,
+                        max: int.tryParse(_participantsController.text) ?? 0,
+                      );
+
+                      /* todo: front단에서 null 입력 방지 문구, 위젯 분리 */
+
+                      _studyNameController.clear();
+                      _descriptionController.clear();
+                      _participantsController.clear();
+
+                      print(await context
+                          .read<StudyModel>()
+                          .addStudy(study, context.read<InfoModel>().user.id));
+
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(

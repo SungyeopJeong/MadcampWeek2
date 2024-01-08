@@ -1,24 +1,10 @@
+import 'package:devil/models/study.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-class Studydetail extends StatefulWidget {
-  final String name, category, description;
-  final int id, max;
-  const Studydetail({
-    super.key,
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.description,
-    required this.max,
-  });
+class StudyDetailPage extends StatelessWidget {
+  final Study study;
+  const StudyDetailPage({super.key, required this.study});
 
-  @override
-  State<Studydetail> createState() => _StudydetailState();
-}
-
-class _StudydetailState extends State<Studydetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,18 +42,16 @@ class _StudydetailState extends State<Studydetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      Container(
-                        child: Text(
-                          widget.name,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        study.name,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        widget.description,
+                        study.description,
                         style: const TextStyle(fontSize: 18),
                       ),
                       const SizedBox(height: 40),
@@ -78,7 +62,7 @@ class _StudydetailState extends State<Studydetail> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        widget.category,
+                        study.category,
                         style: const TextStyle(fontSize: 18),
                       ),
                       const SizedBox(height: 40),
@@ -88,7 +72,7 @@ class _StudydetailState extends State<Studydetail> {
                             fontSize: 21, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '${widget.max}',
+                        '${study.max}',
                         style: const TextStyle(fontSize: 18),
                       ),
                       const SizedBox(
