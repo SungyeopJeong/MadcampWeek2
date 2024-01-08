@@ -50,10 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIdx,
-        children: const [
+        children: [
           MainPage(),
-          ChatPage(),
-          MyPage(),
+          const ChatPage(),
+          const MyPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
