@@ -2,8 +2,10 @@
 
 import 'dart:convert';
 import 'package:devil/pages/main_page.dart';
+import 'package:devil/viewmodels/info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class StudyAdd extends StatefulWidget {
   const StudyAdd({Key? key}) : super(key: key);
@@ -13,12 +15,12 @@ class StudyAdd extends StatefulWidget {
 }
 
 class _StudyAddState extends State<StudyAdd> {
-  final String userid = "7";
   final TextEditingController _studyNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _participantsController = TextEditingController();
   String selectedCategory = ""; // Added variable to store the selected category
   final List<String> categories = ["Frontend", "Backend", "App", "etc"];
+  String userid = "";
 
   Future<void> _submitStudy() async {
     String url = 'http://10.0.2.2:3000/api/study';
@@ -210,7 +212,7 @@ class _StudyAddState extends State<StudyAdd> {
                       padding: EdgeInsets.all(16),
                       child: Text(
                         '스터디 등록하기',
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),

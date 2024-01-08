@@ -52,71 +52,73 @@ class _StudydetailState extends State<Studydetail> {
                 child: Container(
                   padding: const EdgeInsets.all(
                       16.0), // Adjust the padding as needed
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Container(
-                        child: Text(
-                          widget.name,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        Container(
+                          child: Text(
+                            widget.name,
+                            style: const TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        widget.description,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(height: 40),
-                      const Text(
-                        '스터디 분야',
-                        style: TextStyle(
-                            fontSize: 21, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        widget.category,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(height: 40),
-                      const Text(
-                        '스터디 인원',
-                        style: TextStyle(
-                            fontSize: 21, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        '${widget.max}',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      const SizedBox(
-                        height: 60,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          //스터디 참여 버튼
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 40),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          minimumSize: const Size(double.infinity, 0),
+                        const SizedBox(height: 20),
+                        Text(
+                          widget.description,
+                          style: const TextStyle(fontSize: 18),
                         ),
-                        child: const Text(
-                          '참여하기',
+                        const SizedBox(height: 40),
+                        const Text(
+                          '스터디 분야',
                           style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                              fontSize: 21, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          widget.category,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 40),
+                        const Text(
+                          '스터디 인원',
+                          style: TextStyle(
+                              fontSize: 21, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '${widget.max}',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            //스터디 참여 버튼
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            minimumSize: const Size(double.infinity, 0),
+                          ),
+                          child: const Text(
+                            '참여하기',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )),
           ),
