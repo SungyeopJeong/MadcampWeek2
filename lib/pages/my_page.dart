@@ -21,15 +21,25 @@ class MyPage extends StatelessWidget {
   }
 
   Widget _buildAfterLogin(BuildContext context) {
+    final user = context.read<InfoModel>().user;
+
     return Scaffold(
       appBar: const TopAppBar(title: "My Page"),
-      body: Center(
-        child: TextButton(
-          onPressed: () {
-            context.read<InfoModel>().logout();
-          },
-          child: Text("로그아웃"),
-        ),
+      body: Column(
+        children: [
+          Image.network(
+            user.profileUrl,
+          ),
+          Text(user.displayName),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                context.read<InfoModel>().logout();
+              },
+              child: Text("로그아웃"),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -45,7 +55,7 @@ class MyPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               boxShadow: const [
                 BoxShadow(color: DevilColor.lightgrey, blurRadius: 4.0)
-              ]
+              ],
             ),
             child: Image.asset(
               "assets/images/logo.png",

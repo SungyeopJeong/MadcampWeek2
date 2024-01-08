@@ -1,5 +1,3 @@
-// ignore_for_file: empty_catches, avoid_print
-
 import 'package:devil/pages/chat_page.dart';
 import 'package:devil/pages/main_page.dart';
 import 'package:devil/pages/my_page.dart';
@@ -13,8 +11,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env"); // 추가
-  //print(await KakaoSdk.origin);
+  await dotenv.load(fileName: ".env");
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env['nativeKey'],
@@ -52,40 +49,68 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIdx = 0;
 
+  final navKeyList = List.generate(3, (index) => GlobalKey<NavigatorState>());
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIdx,
-        children: const [
-          MainPage(),
-          ChatPage(),
-          MyPage(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (idx) {
-          setState(() {
-            _currentIdx = idx;
-          });
-        },
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        fixedColor: DevilColor.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(_currentIdx == 0 ? Icons.home : Icons.home_outlined),
-            label: 'main',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIdx == 1 ? Icons.chat : Icons.chat_outlined),
-            label: 'chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIdx == 2 ? Icons.person : Icons.person_outlined),
-            label: 'my',
-          ),
-        ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        final pageContext = navKeyList[_currentIdx].currentState!.context;
+        final canPop = Navigator.canPop(pageContext);
+        if (canPop) {
+          Navigator.pop(pageContext);
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIdx,
+          children: [
+            Navigator(
+              key: navKeyList[0],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => MainPage(),
+              ),
+            ),
+            Navigator(
+              key: navKeyList[1],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => ChatPage(),
+              ),
+            ),
+            Navigator(
+              key: navKeyList[2],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => MyPage(),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: (idx) {
+            setState(() {
+              _currentIdx = idx;
+            });
+          },
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          fixedColor: DevilColor.grey,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(_currentIdx == 0 ? Icons.home : Icons.home_outlined),
+              label: 'main',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(_currentIdx == 1 ? Icons.chat : Icons.chat_outlined),
+              label: 'chat',
+            ),
+            BottomNavigationBarItem(
+              icon:
+                  Icon(_currentIdx == 2 ? Icons.person : Icons.person_outlined),
+              label: 'my',
+            ),
+          ],
+        ),
       ),
     );
   }
