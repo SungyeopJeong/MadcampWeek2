@@ -5,9 +5,11 @@ import 'package:devil/pages/main_page.dart';
 import 'package:devil/pages/my_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/theme.dart';
+import 'package:devil/viewmodels/info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,10 +29,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DeVil',
-      theme: DevilTheme.theme,
-      home: const MyHomePage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => InfoModel()),
+      ],
+      child: MaterialApp(
+        title: 'DeVil',
+        theme: DevilTheme.theme,
+        home: const MyHomePage(),
+      ),
     );
   }
 }

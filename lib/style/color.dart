@@ -7,4 +7,6 @@ class DevilColor {
   static const white = Color(0xFFFFFFFF);
   
   static const point = Color(0xFFFFA8B1);
+
+  static const kakao = Color(0xFFFEE500);
 }

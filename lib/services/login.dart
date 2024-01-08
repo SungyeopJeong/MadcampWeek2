@@ -9,6 +9,9 @@ enum LoginPlatform {
   const LoginPlatform(this.locale, this.service);
   final String locale;
   final LoginService service;
+
+  factory LoginPlatform.byName(String name) =>
+      LoginPlatform.values.singleWhere((e) => e.name == name);
 }
 
 class GoogleLoginService extends LoginService {
