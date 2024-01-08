@@ -9,6 +9,9 @@ enum LoginPlatform {
   const LoginPlatform(this.locale, this.service);
   final String locale;
   final LoginService service;
+
+  factory LoginPlatform.byName(String name) =>
+      LoginPlatform.values.singleWhere((e) => e.name == name);
 }
 
 class GoogleLoginService extends LoginService {
@@ -40,6 +43,16 @@ class KakaoLoginService extends LoginService {
   @override
   LoginPlatform get platform => _platform;
 
+  Future<String?> _loginWithKakaoAccount() async {
+    try {
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+      return token.accessToken;
+    } catch (error) {
+      print('Kakao login error: $error');
+    }
+    return null;
+  }
+
   @override
   Future<String?> login() async {
     if (await isKakaoTalkInstalled()) {
@@ -49,28 +62,10 @@ class KakaoLoginService extends LoginService {
         if (error is PlatformException && error.code == 'CANCELED') {
           print("platformException");
         }
-        try {
-          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-          await UserApi.instance.loginWithKakaoAccount();
-          final user = await UserApi.instance.me();
-          print('User Name: ${user.kakaoAccount!.profile!.nickname}');
-          print('token: $token');
-          return token.accessToken;
-        } catch (error) {
-          print('Kakao login error: $error');
-        }
+        return _loginWithKakaoAccount();
       }
     } else {
-      try {
-        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        await UserApi.instance.loginWithKakaoAccount();
-        final user = await UserApi.instance.me();
-        print('User Name: ${user.kakaoAccount!.profile!.nickname}');
-        print('token: $token');
-        return token.accessToken;
-      } catch (error) {
-        print('Kakao login error: $error');
-      }
+      return _loginWithKakaoAccount();
     }
     return null;
   }

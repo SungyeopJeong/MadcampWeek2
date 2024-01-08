@@ -6,6 +6,12 @@ enum HttpMethod {
   post;
 }
 
+extension StatusCode on int {
+  bool isOk() {
+    return this == 200 || this == 201;
+  }
+}
+
 class API {
   const API();
 

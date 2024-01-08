@@ -1,18 +1,17 @@
-// ignore_for_file: empty_catches, avoid_print
-
 import 'package:devil/pages/chat_page.dart';
 import 'package:devil/pages/main_page.dart';
 import 'package:devil/pages/my_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/theme.dart';
+import 'package:devil/viewmodels/info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env"); // 추가
-  //print(await KakaoSdk.origin);
+  await dotenv.load(fileName: ".env");
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env['nativeKey'],
@@ -27,10 +26,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DeVil',
-      theme: DevilTheme.theme,
-      home: const MyHomePage(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => InfoModel()),
+      ],
+      child: MaterialApp(
+        title: 'DeVil',
+        theme: DevilTheme.theme,
+        home: const MyHomePage(),
+      ),
     );
   }
 }
@@ -45,40 +49,68 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIdx = 0;
 
+  final navKeyList = List.generate(3, (index) => GlobalKey<NavigatorState>());
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIdx,
-        children: [
-          MainPage(),
-          const ChatPage(),
-          const MyPage(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (idx) {
-          setState(() {
-            _currentIdx = idx;
-          });
-        },
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        fixedColor: DevilColor.grey,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(_currentIdx == 0 ? Icons.home : Icons.home_outlined),
-            label: 'main',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIdx == 1 ? Icons.chat : Icons.chat_outlined),
-            label: 'chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(_currentIdx == 2 ? Icons.person : Icons.person_outlined),
-            label: 'my',
-          ),
-        ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        final pageContext = navKeyList[_currentIdx].currentState!.context;
+        final canPop = Navigator.canPop(pageContext);
+        if (canPop) {
+          Navigator.pop(pageContext);
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _currentIdx,
+          children: [
+            Navigator(
+              key: navKeyList[0],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => const MainPage(),
+              ),
+            ),
+            Navigator(
+              key: navKeyList[1],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => const ChatPage(),
+              ),
+            ),
+            Navigator(
+              key: navKeyList[2],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => const MyPage(),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: (idx) {
+            setState(() {
+              _currentIdx = idx;
+            });
+          },
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          fixedColor: DevilColor.grey,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(_currentIdx == 0 ? Icons.home : Icons.home_outlined),
+              label: 'main',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(_currentIdx == 1 ? Icons.chat : Icons.chat_outlined),
+              label: 'chat',
+            ),
+            BottomNavigationBarItem(
+              icon:
+                  Icon(_currentIdx == 2 ? Icons.person : Icons.person_outlined),
+              label: 'my',
+            ),
+          ],
+        ),
       ),
     );
   }
