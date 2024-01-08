@@ -20,24 +20,16 @@ class StudyDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: MediaQuery.of(context).size.height *
-                0.3, // Align at the bottom 50%
-            left: 0,
-            right: 0,
-            child: Container(
-                height: MediaQuery.of(context).size.height,
+          Container(
+            margin: const EdgeInsets.only(top: 200),
+            child: SingleChildScrollView(
+              child: Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50.0),
-                    topRight: Radius.circular(50.0),
-                  ),
                 ),
                 child: Container(
-                  padding: const EdgeInsets.all(
-                      16.0), // Adjust the padding as needed
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -102,7 +94,9 @@ class StudyDetailPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
           Positioned(
             top: 30,
@@ -116,7 +110,7 @@ class StudyDetailPage extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 70,
+            top: 50,
             left: 2, // 오른쪽에 배치할 위치 조정
             child: Image.asset(
               'assets/images/logo.png', // 이미지 파일의 경로 또는 이미지 위젯 사용
