@@ -2,6 +2,7 @@
 
 import 'package:devil/services/api.dart';
 import 'package:devil/services/login.dart';
+import 'package:devil/study.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -9,7 +10,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); // 추가
-  print(await KakaoSdk.origin);
+  //print(await KakaoSdk.origin);
 
   KakaoSdk.init(
     nativeAppKey: dotenv.env['nativeKey'],
@@ -149,6 +150,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   await API.auth.login(e);
                 },
                 child: Text("${e.locale}로 시작하기"))),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the StudyAdd page when the button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const StudyPage()),
+                );
+              },
+              child: const Text('Go to Study Page'),
+            ),
           ],
         ),
       ),
