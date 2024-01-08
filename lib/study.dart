@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:devil/addstudy.dart';
 import 'package:devil/study_model.dart';
-import 'package:devil/widgets/study_widget.dart';
+import 'package:devil/study_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -51,12 +51,11 @@ class _StudyPage extends State<StudyPage> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     // 데이터가 있는 경우
-                    return Column(
+                    return const Column(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           height: 50,
                         ),
-                        makeStudyList()
                       ],
                     );
                   } else if (snapshot.hasError) {
