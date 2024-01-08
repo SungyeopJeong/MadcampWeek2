@@ -4,6 +4,7 @@ import 'package:devil/pages/my_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/theme.dart';
 import 'package:devil/viewmodels/info_model.dart';
+import 'package:devil/viewmodels/study_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => InfoModel()),
+        ChangeNotifierProvider(create: (_) => StudyModel()),
       ],
       child: MaterialApp(
         title: 'DeVil',

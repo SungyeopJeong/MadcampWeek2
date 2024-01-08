@@ -1,21 +1,13 @@
-import 'package:devil/pages/studydetail_page.dart';
+import 'package:devil/models/study.dart';
+import 'package:devil/pages/study_detail_page.dart';
+import 'package:devil/style/color.dart';
+import 'package:devil/style/text.dart';
 import 'package:flutter/material.dart';
 
-class Study extends StatelessWidget {
-  final String name, category, description;
-  final int id, max;
-  const Study({
-    super.key,
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.description,
-    required this.max,
-  });
+class StudyBlock extends StatelessWidget {
+  final Study study;
 
-  final TextStyle textStyle = const TextStyle(
-    color: Color(0xFFFFA8B1),
-  );
+  const StudyBlock({super.key, required this.study});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +17,8 @@ class Study extends StatelessWidget {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                Studydetail(
-              id: id,
-              name: name,
-              category: category,
-              description: description,
-              max: max,
+                StudyDetailPage(
+              study: study,
             ),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
@@ -62,9 +50,9 @@ class Study extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
+            const Icon(
               Icons.home,
-              color: textStyle.color,
+              color: DevilColor.point,
               size: 40,
             ),
             const SizedBox(
@@ -75,23 +63,23 @@ class Study extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: textStyle.color,
-                      fontSize: 26,
-                    ),
+                    study.name,
+                    style:
+                        DevilText.headlineB.copyWith(color: DevilColor.point),
                   ),
                   const SizedBox(
                     height: 12.0,
                   ),
-                  Text(description, style: textStyle),
+                  Text(
+                    study.description,
+                    style: DevilText.bodyM.copyWith(color: DevilColor.point),
+                  ),
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
-              color: textStyle.color,
+              color: DevilColor.point,
             ),
           ],
         ),
