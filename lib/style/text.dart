@@ -20,4 +20,5 @@ class DevilText {
   static final TextStyle titleM = _medium.copyWith(fontSize: 20, height: 24 / 20);
 
   static final TextStyle titleB = _bold.copyWith(fontSize: 20, height: 24 / 20);
+  static final TextStyle headlineB = _bold.copyWith(fontSize: 24, height: 28 / 24);
 }

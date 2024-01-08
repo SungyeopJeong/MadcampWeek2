@@ -1,9 +1,8 @@
-import 'dart:convert';
-import 'package:devil/pages/studyadd_page.dart';
+import 'package:devil/pages/study_add_page.dart';
+import 'package:devil/viewmodels/study_model.dart';
 import 'package:flutter/material.dart';
-import 'package:devil/study_model.dart';
-import 'package:devil/widgets/study_widget.dart';
-import 'package:http/http.dart' as http;
+import 'package:devil/widgets/study_block.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -13,37 +12,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  late Future<dynamic> studyData;
-  String selectedCategory = ""; // Added variable to store the selected category
-  final List<String> categories = ["Frontend", "Backend", "App", "etc"];
-
-  @override
-  void initState() {
-    super.initState();
-    studyData = fetchStudyData(); //
-  }
-
-  Future fetchStudyData() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/api/study'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> studyListData = jsonDecode(response.body);
-      List<StudyModel> resultList = [];
-
-      for (var study in studyListData) {
-        final instance = StudyModel.fromJson(study);
-        resultList.add(instance);
-      }
-
-      resultList = resultList.reversed.toList(); //촤신순
-
-      return resultList;
-    } else {
-      // API 호출이 실패하면 에러 메시지를 반환
-      throw Exception('Failed to load data');
-    }
-  }
+  StudyCategory?
+      selectedCategory; // Added variable to store the selected category
 
   @override
   Widget build(BuildContext context) {
@@ -73,17 +43,17 @@ class _MainPageState extends State<MainPage> {
               children: [
                 Expanded(
                   child: FutureBuilder(
-                    future: studyData,
+                    future: context.read<StudyModel>().studies,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         // 데이터가 있는 경우
-                        return makeStudyList(snapshot.data);
+                        return _buildStudyList(snapshot.data!.reversed.toList());
                       } else if (snapshot.hasError) {
                         // 에러가 있는 경우
                         return Text('Error: ${snapshot.error}');
                       }
 
-                      return const CircularProgressIndicator();
+                      return const Center(child: CircularProgressIndicator());
                     },
                   ),
                 ),
@@ -97,7 +67,7 @@ class _MainPageState extends State<MainPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const StudyAdd()),
+                  MaterialPageRoute(builder: (context) => const StudyAddPage()),
                 );
               },
               backgroundColor: const Color(0xFFFFA8B1),
@@ -109,20 +79,14 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  ListView makeStudyList(studies) {
+  Widget _buildStudyList(studies) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       itemCount: studies.length,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var study = studies[index];
-        return Study(
-          id: study.id,
-          name: study.name,
-          category: study.category,
-          description: study.description,
-          max: int.parse(study.max),
-        );
+        return StudyBlock(study: study);
       },
       separatorBuilder: (context, index) => const SizedBox(
         width: 20,
