@@ -1,11 +1,15 @@
+import 'dart:convert';
+
+import 'package:devil/models/user.dart';
 import 'package:devil/services/api.dart';
 import 'package:devil/services/login.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart';
 
 class AuthAPI extends API {
   const AuthAPI();
 
-  Future<void> login(LoginPlatform platform) async {
+  Future<User?> login(LoginPlatform platform) async {
     final token = await platform.service.login();
     final url = dotenv.get('API_AUTH');
 
@@ -13,9 +17,13 @@ class AuthAPI extends API {
       '$url/${platform.name}',
       HttpMethod.post,
       body: {'token': token},
-    );
+    ).timeout(const Duration(seconds: 3), onTimeout: () {
+      return Response("Timeout", 408);
+    });
 
-    print("tried to post token($token) to server");
-    print('${response.statusCode}: ${response.body}');
+    if (response.statusCode.isOk()) {
+      return User.fromJson(jsonDecode(response.body));
+    }
+    return null;
   }
 }

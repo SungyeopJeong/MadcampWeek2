@@ -1,3 +1,4 @@
+import 'package:devil/style/color.dart';
 import 'package:devil/style/text.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +13,10 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: preferredSize.height,
+      backgroundColor: DevilColor.bg,
       title: Text(
         title,
-        style: DevilText.bold,
+        style: DevilText.titleB,
       ),
     );
   }
