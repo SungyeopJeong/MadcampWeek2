@@ -155,9 +155,7 @@ class _MainPageState extends State<MainPage> {
         var study = filteredStudies[index];
         return StudyBlock(study: study);
       },
-      separatorBuilder: (context, index) => const SizedBox(
-        width: 20,
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
     );
   }
 }

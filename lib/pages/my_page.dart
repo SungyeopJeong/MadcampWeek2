@@ -1,7 +1,10 @@
+import 'package:devil/models/study.dart';
 import 'package:devil/services/login.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/text.dart';
 import 'package:devil/viewmodels/info_model.dart';
+import 'package:devil/widgets/inkwell_btn.dart';
+import 'package:devil/widgets/study_block.dart';
 import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,26 +24,105 @@ class MyPage extends StatelessWidget {
   }
 
   Widget _buildAfterLogin(BuildContext context) {
-    final user = context.read<InfoModel>().user;
-
     return Scaffold(
       appBar: const TopAppBar(title: "My Page"),
-      body: Column(
-        children: [
-          Image.network(
-            user.profileUrl,
-          ),
-          Text(user.displayName),
-          Center(
-            child: TextButton(
-              onPressed: () {
-                context.read<InfoModel>().logout();
-              },
-              child: Text("로그아웃"),
-            ),
-          ),
-        ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            _buildProfile(context),
+            _buildStudyList("가입한 스터디", []),
+            _buildStudyList("완료한 스터디", []),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildProfile(BuildContext context) {
+    final user = context.read<InfoModel>().user;
+
+    return InkWellBtn(
+      btnColor: DevilColor.white,
+      radius: 12,
+      onTap: () {
+        context.read<InfoModel>().logout();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(user.profileUrl),
+              radius: 24,
+            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    text: user.displayName,
+                    style: DevilText.titleB,
+                    children: [TextSpan(text: " 님", style: DevilText.titleL)],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "${user.platform.locale}로 로그인 중",
+                      style: DevilText.labelM,
+                    ),
+                    const Icon(Icons.chevron_right_rounded, size: 16),
+                  ],
+                ),
+              ],
+            ),
+            const Spacer(),
+            InkWellBtn(
+              radius: 4,
+              onTap: () {},
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: DevilColor.grey),
+                    borderRadius: BorderRadius.circular(4)),
+                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 9),
+                child: Text(
+                  "회원탈퇴",
+                  style: DevilText.labelM.copyWith(color: DevilColor.grey),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStudyList(String title, List<Study> studies) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Text("$title ${studies.length}", style: DevilText.bodyM),
+        ),
+        if (studies.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: StudyBlock(textIfNull: "$title가 없습니다")
+          )
+        else
+          ...studies
+              .sublist(0, 2)
+              .map(
+                (e) => Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: StudyBlock(study: e),
+                ),
+              )
+              .toList(),
+      ],
     );
   }
 
@@ -71,7 +153,7 @@ class MyPage extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             "페이지를 이용하기 위해 로그인이 필요합니다.",
-            style: DevilText.labelL.copyWith(color: DevilColor.grey),
+            style: DevilText.labelLH.copyWith(color: DevilColor.grey),
           ),
           const Spacer(flex: 1),
           () {
@@ -96,45 +178,41 @@ class MyPage extends StatelessWidget {
 
   Widget _buildLoginBtn(LoginPlatform platform, BuildContext context) {
     final isKakao = platform == LoginPlatform.kakao;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Material(
-        color: isKakao ? DevilColor.kakao : DevilColor.white,
-        child: InkWell(
-          onTap: () {
-            context.read<InfoModel>().login(platform).then((value) {
-              if (!value) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: DevilColor.black,
-                    content: Text(
-                      "로그인에 실패했습니다",
-                      style: DevilText.bodyM.copyWith(color: DevilColor.point),
-                    ),
-                  ),
-                );
-              }
-            });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              border: isKakao ? null : Border.all(color: DevilColor.lightgrey),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            height: _btnHeight,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset('assets/icons/ic_${platform.name}.svg'),
-                const SizedBox(width: 16),
-                Text(
-                  "${platform.locale}로 로그인하기",
-                  style: DevilText.bodyM,
+    return InkWellBtn(
+      btnColor: isKakao ? DevilColor.kakao : DevilColor.white,
+      radius: 12,
+      onTap: () {
+        context.read<InfoModel>().login(platform).then((value) {
+          if (!value) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: DevilColor.black,
+                content: Text(
+                  "로그인에 실패했습니다",
+                  style: DevilText.bodyM.copyWith(color: DevilColor.point),
                 ),
-              ],
+              ),
+            );
+          }
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: isKakao ? null : Border.all(color: DevilColor.lightgrey),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        height: _btnHeight,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset('assets/icons/ic_${platform.name}.svg'),
+            const SizedBox(width: 16),
+            Text(
+              "${platform.locale}로 로그인하기",
+              style: DevilText.bodyM,
             ),
-          ),
+          ],
         ),
       ),
     );
