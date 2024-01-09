@@ -37,7 +37,8 @@ class MyApp extends StatelessWidget {
         theme: DevilTheme.theme,
         builder: (context, child) {
           return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: TextScaler.noScaling),
             child: child!,
           );
         },
@@ -61,6 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final islogined = context.read<InfoModel>().isLogined;
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -89,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onGenerateRoute: (_) => MaterialPageRoute(
                 builder: (_) => const ChatPage(),
               ),
-            ),
+          
             Navigator(
               key: navKeyList[2],
               onGenerateRoute: (_) => MaterialPageRoute(

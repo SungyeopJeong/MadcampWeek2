@@ -18,6 +18,7 @@ class _StudyAddState extends State<StudyAddPage> {
   final TextEditingController _studyNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _participantsController = TextEditingController();
+  bool isEmpty = false;
   StudyCategory? selectedCategory;
 
   @override
@@ -106,6 +107,14 @@ class _StudyAddState extends State<StudyAddPage> {
               const SizedBox(height: 18.0),
               TextField(
                 controller: _studyNameController,
+                onChanged: (value) {
+                  setState(() {
+                    isEmpty = _studyNameController.text.isNotEmpty &&
+                        selectedCategory != null &&
+                        _descriptionController.text.isNotEmpty &&
+                        _participantsController.text.isNotEmpty;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Study Name', // Use hintText instead of labelText
                   filled: true,
@@ -124,6 +133,14 @@ class _StudyAddState extends State<StudyAddPage> {
               const SizedBox(height: 18.0),
               TextField(
                 controller: _descriptionController,
+                onChanged: (value) {
+                  setState(() {
+                    isEmpty = _studyNameController.text.isNotEmpty &&
+                        selectedCategory != null &&
+                        _descriptionController.text.isNotEmpty &&
+                        _participantsController.text.isNotEmpty;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Study Description',
                   filled: true,
@@ -143,6 +160,14 @@ class _StudyAddState extends State<StudyAddPage> {
               const SizedBox(height: 18.0),
               TextField(
                 controller: _participantsController,
+                onChanged: (value) {
+                  setState(() {
+                    isEmpty = _studyNameController.text.isNotEmpty &&
+                        selectedCategory != null &&
+                        _descriptionController.text.isNotEmpty &&
+                        _participantsController.text.isNotEmpty;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Participants',
                   filled: true,
@@ -160,7 +185,7 @@ class _StudyAddState extends State<StudyAddPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: (_studyNameController.text.isNotEmpty)
+                    onPressed: (isEmpty)
                         ? () async {
                             final study = Study(
                               name: _studyNameController.text,
@@ -169,8 +194,6 @@ class _StudyAddState extends State<StudyAddPage> {
                               max: int.tryParse(_participantsController.text) ??
                                   0,
                             );
-
-                            /* todo: front단에서 null 입력 방지 문구, 위젯 분리 */
 
                             _studyNameController.clear();
                             _descriptionController.clear();
