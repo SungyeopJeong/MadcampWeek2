@@ -35,6 +35,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'DeVil',
         theme: DevilTheme.theme,
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+            child: child!,
+          );
+        },
         home: const MyHomePage(),
       ),
     );

@@ -6,7 +6,7 @@ class DevilColor {
   static const lightgrey = Color(0xFFA1A1A1);
   static const white = Color(0xFFFFFFFF);
 
-  static const bg = Color(0xFFF7F7F7);
+  static const bg = Color(0xFFF5F5F5);
   
   static const point = Color(0xFFFFA8B1);
 
