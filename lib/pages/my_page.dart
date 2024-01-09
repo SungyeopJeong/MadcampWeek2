@@ -32,7 +32,7 @@ class MyPage extends StatelessWidget {
           children: [
             _buildProfile(context),
             FutureBuilder(
-              future: context.read<InfoModel>().myStudies,
+              future: context.watch<InfoModel>().myStudies,
               builder: (_, snapshot) {
                 return _buildStudyList("가입한 스터디", snapshot.data ?? []);
               },

@@ -199,8 +199,12 @@ class _StudyAddState extends State<StudyAddPage> {
                             _descriptionController.clear();
                             _participantsController.clear();
 
-                            print(await context.read<StudyModel>().addStudy(
-                                study, context.read<InfoModel>().user.id));
+                            if (await context.read<StudyModel>().addStudy(
+                                study, context.read<InfoModel>().user.id)) {
+                              debugPrint('study added');
+                              context.read<StudyModel>().getStudies();
+                              context.read<InfoModel>().getMyStudies();
+                            }
 
                             Navigator.pop(context);
                           }

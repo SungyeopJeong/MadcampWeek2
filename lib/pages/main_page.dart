@@ -56,7 +56,7 @@ class _MainPageState extends State<MainPage> {
             ),
             Expanded(
               child: FutureBuilder(
-                future: context.read<StudyModel>().studies,
+                future: context.watch<StudyModel>().studies,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return _buildStudyList(snapshot.data!);

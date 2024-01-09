@@ -19,7 +19,6 @@ class InfoModel extends ChangeNotifier {
       _user = (await API.auth.login(platform))!;
       _isLogined = true;
       getMyStudies();
-      notifyListeners();
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -29,6 +28,7 @@ class InfoModel extends ChangeNotifier {
 
   Future<void> getMyStudies() async {
     _myStudies = API.study.getMyStudyList(_user.id);
+    notifyListeners();
   }
 
   void logout() {
