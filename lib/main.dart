@@ -86,13 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 }),
               ),
             ),
-            if (islogined)
-              Navigator(
-                key: navKeyList[1],
-                onGenerateRoute: (_) => MaterialPageRoute(
-                  builder: (_) => const ChatPage(),
-                ),
+            Navigator(
+              key: navKeyList[1],
+              onGenerateRoute: (_) => MaterialPageRoute(
+                builder: (_) => const ChatPage(),
               ),
+          
             Navigator(
               key: navKeyList[2],
               onGenerateRoute: (_) => MaterialPageRoute(
