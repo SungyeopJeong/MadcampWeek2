@@ -9,7 +9,7 @@ class StudyAPI extends API {
   const StudyAPI();
 
   String get url => dotenv.get('API_STUDY');
-  String get join_url => dotenv.get('API_STUDY_JOIN');
+  String get joinUrl => dotenv.get('API_STUDY_JOIN');
 
   Future<List<Study>> getList() async {
     final response = await request(url, HttpMethod.get);
