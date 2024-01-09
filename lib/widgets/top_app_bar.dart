@@ -14,6 +14,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       toolbarHeight: preferredSize.height,
       backgroundColor: DevilColor.bg,
+      surfaceTintColor: DevilColor.bg,
       title: Text(
         title,
         style: DevilText.titleB,

@@ -3,7 +3,7 @@ import 'package:devil/services/api.dart';
 import 'package:flutter/foundation.dart';
 
 enum StudyCategory {
-  frontend("FrontEnd"),
+  frontend("Frontend"),
   backend("Backend"),
   app("App"),
   etc("etc");

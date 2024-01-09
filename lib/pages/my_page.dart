@@ -52,9 +52,17 @@ class MyPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(user.profileUrl),
-              radius: 24,
+            SizedBox(
+              width: 48,
+              height: 48,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.network(
+                  user.profileUrl,
+                  errorBuilder: (_, __, ___) =>
+                      const ColoredBox(color: DevilColor.black),
+                ),
+              ),
             ),
             const SizedBox(width: 16),
             Column(
@@ -109,9 +117,8 @@ class MyPage extends StatelessWidget {
         ),
         if (studies.isEmpty)
           Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: StudyBlock(textIfNull: "$title가 없습니다")
-          )
+              padding: const EdgeInsets.only(top: 16),
+              child: StudyBlock(textIfNull: "$title가 없습니다"))
         else
           ...studies
               .sublist(0, 2)
