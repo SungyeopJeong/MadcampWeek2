@@ -3,6 +3,7 @@ import 'package:devil/pages/study_add_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
+import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:devil/widgets/study_block.dart';
 import 'package:provider/provider.dart';
@@ -26,23 +27,7 @@ class _MainPageState extends State<MainPage> {
     final islogined = context.read<InfoModel>().isLogined;
     const categories = StudyCategory.values;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const Icon(
-          Icons.home, // 집 모양의 아이콘
-          color: Colors.black, // 아이콘의 색상
-          size: 40,
-        ),
-        title: const Text(
-          'STUDY',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 23,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      appBar: const TopAppBar(title: 'STUDY'),
       body: Stack(
         children: [
           Center(
