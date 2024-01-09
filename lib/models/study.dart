@@ -18,6 +18,7 @@ class Study {
       name: json['name'],
       category: json['category'],
       description: json['description'],
+      now: json['now'],
       max: json['max'],
     );
   }
