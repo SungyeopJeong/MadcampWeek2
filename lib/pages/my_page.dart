@@ -3,6 +3,7 @@ import 'package:devil/pages/study_list_page.dart';
 import 'package:devil/services/login.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/text.dart';
+import 'package:devil/viewmodels/chat_model.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/widgets/inkwell_btn.dart';
 import 'package:devil/widgets/page_route_builder.dart';
@@ -36,6 +37,11 @@ class MyPage extends StatelessWidget {
             FutureBuilder(
               future: context.watch<InfoModel>().myStudies,
               builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  context
+                      .read<ChatModel>()
+                      .init(context.read<InfoModel>().user.id, snapshot.data!);
+                }
                 return _buildStudyList(context, "가입한 스터디", snapshot.data ?? []);
               },
             ),

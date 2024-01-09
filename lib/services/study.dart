@@ -59,9 +59,9 @@ class StudyAPI extends API {
     );
 
     if (response.statusCode.isOk()) {
-      return (jsonDecode(response.body) as List).map((e) {
-        return Study.fromJson(e);
-      }).toList();
+      return (jsonDecode(response.body) as List)
+          .map((e) => Study.fromJson(e))
+          .toList();
     }
     return List.empty();
   }
