@@ -1,12 +1,51 @@
+// ignore_for_file: avoid_print
+
 import 'package:devil/models/study.dart';
+import 'package:devil/pages/my_page.dart';
+import 'package:devil/style/color.dart';
+import 'package:devil/viewmodels/info_model.dart';
+import 'package:devil/viewmodels/study_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class StudyDetailPage extends StatelessWidget {
   final Study study;
-  const StudyDetailPage({super.key, required this.study});
+
+  const StudyDetailPage({
+    super.key,
+    required this.study,
+  });
+
+  Future<void> sendPostRequest(String userId, int studyId) async {
+    try {
+      Map<String, dynamic> data = {
+        'userid': userId,
+        'studyid': studyId.toString(),
+      };
+
+      final response = await http.post(
+        Uri.parse("http://172.10.7.49/api/study/join"),
+        body: data,
+      );
+      if (response.statusCode == 200) {
+        print('POST request successful: ${response.body}');
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error during POST request: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final islogined = context.read<InfoModel>().isLogined;
+    if (islogined) {
+      final user = context.read<InfoModel>().user;
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -24,7 +63,7 @@ class StudyDetailPage extends StatelessWidget {
             margin: const EdgeInsets.only(top: 200),
             child: SingleChildScrollView(
               child: Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
@@ -71,11 +110,18 @@ class StudyDetailPage extends StatelessWidget {
                         height: 60,
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          //스터디 참여 버튼
-                        },
+                        onPressed: islogined
+                            ? () {
+                                sendPostRequest(
+                                    context.read<InfoModel>().user.id,
+                                    study.id!);
+                              }
+                            : () {
+                                Navigator.pop(context);
+                              },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
+                          backgroundColor:
+                              islogined ? Colors.black : DevilColor.grey,
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 40),
                           shape: RoundedRectangleBorder(
@@ -83,9 +129,9 @@ class StudyDetailPage extends StatelessWidget {
                           ),
                           minimumSize: const Size(double.infinity, 0),
                         ),
-                        child: const Text(
-                          '참여하기',
-                          style: TextStyle(
+                        child: Text(
+                          islogined ? '참여하기' : '로그인 후 이용하세요',
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

@@ -31,4 +31,9 @@ class StudyModel extends ChangeNotifier {
     getStudies();
     return isAdded;
   }
+
+  Future joinStudy(String userid, int studyid) async {
+    final joinstudy = await API.study.joinStudy(userid, studyid);
+    return joinstudy;
+  }
 }

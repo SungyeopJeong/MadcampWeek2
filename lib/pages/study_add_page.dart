@@ -18,12 +18,12 @@ class _StudyAddState extends State<StudyAddPage> {
   final TextEditingController _studyNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _participantsController = TextEditingController();
-  StudyCategory?
-      selectedCategory; // Added variable to store the selected category
+  StudyCategory? selectedCategory;
 
   @override
   Widget build(BuildContext context) {
     const categories = StudyCategory.values;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent, // 투명 배경
@@ -160,39 +160,44 @@ class _StudyAddState extends State<StudyAddPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      final study = Study(
-                        name: _studyNameController.text,
-                        category: selectedCategory?.locale ?? "",
-                        description: _descriptionController.text,
-                        max: int.tryParse(_participantsController.text) ?? 0,
-                      );
+                    onPressed: (_studyNameController.text.isNotEmpty)
+                        ? () async {
+                            final study = Study(
+                              name: _studyNameController.text,
+                              category: selectedCategory?.locale ?? "",
+                              description: _descriptionController.text,
+                              max: int.tryParse(_participantsController.text) ??
+                                  0,
+                            );
 
-                      /* todo: front단에서 null 입력 방지 문구, 위젯 분리 */
+                            /* todo: front단에서 null 입력 방지 문구, 위젯 분리 */
 
-                      _studyNameController.clear();
-                      _descriptionController.clear();
-                      _participantsController.clear();
+                            _studyNameController.clear();
+                            _descriptionController.clear();
+                            _participantsController.clear();
 
-                      print(await context
-                          .read<StudyModel>()
-                          .addStudy(study, context.read<InfoModel>().user.id));
+                            print(await context.read<StudyModel>().addStudy(
+                                study, context.read<InfoModel>().user.id));
 
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MainPage()),
-                        (route) => false,
-                      );
-                    },
+                            Navigator.pop(context);
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: (_studyNameController.text.isNotEmpty &&
+                              selectedCategory != null &&
+                              _descriptionController.text.isNotEmpty &&
+                              _participantsController.text.isNotEmpty)
+                          ? Colors.black
+                          : Colors.grey,
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
                         '스터디 등록하기',
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

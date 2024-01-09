@@ -9,6 +9,7 @@ class StudyAPI extends API {
   const StudyAPI();
 
   String get url => dotenv.get('API_STUDY');
+  String get join_url => dotenv.get('API_STUDY_JOIN');
 
   Future<List<Study>> getList() async {
     final response = await request(url, HttpMethod.get);
@@ -31,6 +32,21 @@ class StudyAPI extends API {
         'description': study.description,
         'max': study.max.toString(),
         'creatorid': userid,
+      },
+    ).timeout(const Duration(seconds: 3), onTimeout: () {
+      return Response("Timeout", 408);
+    });
+
+    return response.statusCode.isOk();
+  }
+
+  Future joinStudy(String userid, int studyid) async {
+    final response = await request(
+      url,
+      HttpMethod.post,
+      body: {
+        'userid': userid,
+        'studyid': studyid,
       },
     ).timeout(const Duration(seconds: 3), onTimeout: () {
       return Response("Timeout", 408);
