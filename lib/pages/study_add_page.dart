@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:devil/models/study.dart';
-import 'package:devil/pages/main_page.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
+import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,25 +26,7 @@ class _StudyAddState extends State<StudyAddPage> {
     const categories = StudyCategory.values;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent, // 투명 배경
-        elevation: 0, // 그림자 효과 제거
-
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back,
-              color: Colors.black), // 뒤로가기 버튼 색상을 검은색으로 설정
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          'STUDY 등록하기',
-          style: TextStyle(
-            fontSize: 23,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      appBar: const TopAppBar(title: 'STUDY 등록하기', canPop: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -199,8 +181,12 @@ class _StudyAddState extends State<StudyAddPage> {
                             _descriptionController.clear();
                             _participantsController.clear();
 
-                            print(await context.read<StudyModel>().addStudy(
-                                study, context.read<InfoModel>().user.id));
+                            if (await context.read<StudyModel>().addStudy(
+                                study, context.read<InfoModel>().user.id)) {
+                              debugPrint('study added');
+                              context.read<StudyModel>().getStudies();
+                              context.read<InfoModel>().getMyStudies();
+                            }
 
                             Navigator.pop(context);
                           }

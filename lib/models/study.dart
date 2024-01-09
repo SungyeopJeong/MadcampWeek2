@@ -2,6 +2,7 @@ class Study {
   final String name, category, description;
   final int? id;
   final int now, max;
+  final bool canDelete;
 
   const Study({
     this.id,
@@ -10,6 +11,7 @@ class Study {
     required this.description,
     this.now = 0,
     required this.max,
+    this.canDelete = false,
   });
 
   factory Study.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Study {
       description: json['description'],
       now: json['now'],
       max: json['max'],
+      canDelete: (json['canDelete'] ?? 0) == 0 ? false : true,
     );
   }
 }
