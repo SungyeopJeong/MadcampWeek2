@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,7 @@ class KakaoLoginService extends LoginService {
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
       return token.accessToken;
     } catch (error) {
-      print('Kakao login error: $error');
+      debugPrint('Kakao login error: $error');
     }
     return null;
   }
@@ -60,7 +61,7 @@ class KakaoLoginService extends LoginService {
         await UserApi.instance.loginWithKakaoTalk();
       } catch (error) {
         if (error is PlatformException && error.code == 'CANCELED') {
-          print("platformException");
+          debugPrint("platformException");
         }
         return _loginWithKakaoAccount();
       }

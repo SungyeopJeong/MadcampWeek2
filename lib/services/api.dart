@@ -28,11 +28,20 @@ class API {
     try {
       final headers = {if (token != null) 'Authorization': 'Bearer $token'};
 
+      Future<Response> setTimeout(Future<Response> req) async {
+        return await req.timeout(
+          const Duration(seconds: 3),
+          onTimeout: () {
+            return Response("Timeout", 408);
+          },
+        );
+      }
+
       switch (method) {
         case HttpMethod.get:
-          return await get(Uri.parse(url), headers: headers);
+          return setTimeout(get(Uri.parse(url), headers: headers));
         case HttpMethod.post:
-          return await post(Uri.parse(url), headers: headers, body: body);
+          return setTimeout(post(Uri.parse(url), headers: headers, body: body));
       }
     } catch (e) {
       return Response('', 404);

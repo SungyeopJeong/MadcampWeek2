@@ -31,7 +31,12 @@ class MyPage extends StatelessWidget {
         child: Column(
           children: [
             _buildProfile(context),
-            _buildStudyList("가입한 스터디", []),
+            FutureBuilder(
+              future: context.read<InfoModel>().myStudies,
+              builder: (_, snapshot) {
+                return _buildStudyList("가입한 스터디", snapshot.data ?? []);
+              },
+            ),
             _buildStudyList("완료한 스터디", []),
           ],
         ),
