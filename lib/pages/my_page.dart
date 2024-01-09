@@ -1,9 +1,11 @@
 import 'package:devil/models/study.dart';
+import 'package:devil/pages/study_list_page.dart';
 import 'package:devil/services/login.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/text.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/widgets/inkwell_btn.dart';
+import 'package:devil/widgets/page_route_builder.dart';
 import 'package:devil/widgets/study_block.dart';
 import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +35,11 @@ class MyPage extends StatelessWidget {
             _buildProfile(context),
             FutureBuilder(
               future: context.watch<InfoModel>().myStudies,
-              builder: (_, snapshot) {
-                return _buildStudyList("가입한 스터디", snapshot.data ?? []);
+              builder: (context, snapshot) {
+                return _buildStudyList(context, "가입한 스터디", snapshot.data ?? []);
               },
             ),
-            _buildStudyList("완료한 스터디", []),
+            _buildStudyList(context, "완료한 스터디", []),
           ],
         ),
       ),
@@ -86,7 +88,11 @@ class MyPage extends StatelessWidget {
                       "${user.platform.locale}로 로그인 중",
                       style: DevilText.labelM,
                     ),
-                    const Icon(Icons.chevron_right_rounded, size: 16),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      size: 16,
+                      color: DevilColor.black,
+                    ),
                   ],
                 ),
               ],
@@ -112,13 +118,38 @@ class MyPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStudyList(String title, List<Study> studies) {
+  Widget _buildStudyList(
+    BuildContext context,
+    String title,
+    List<Study> studies,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 20),
-          child: Text("$title ${studies.length}", style: DevilText.bodyM),
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              Navigator.push(
+                context,
+                pageRouteBuilder(
+                  page: StudyListPage(title: title, list: studies),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                Text("$title ${studies.length}", style: DevilText.bodyM),
+                const Spacer(),
+                Text("더보기", style: DevilText.labelMH),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: DevilColor.black,
+                ),
+              ],
+            ),
+          ),
         ),
         if (studies.isEmpty)
           Padding(

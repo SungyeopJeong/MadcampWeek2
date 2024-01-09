@@ -5,6 +5,7 @@ import 'package:devil/style/text.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
 import 'package:devil/widgets/inkwell_btn.dart';
+import 'package:devil/widgets/page_route_builder.dart';
 import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:devil/widgets/study_block.dart';
@@ -93,9 +94,7 @@ class _MainPageState extends State<MainPage> {
               ? () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const StudyAddPage(),
-                    ),
+                    pageRouteBuilder(page: const StudyAddPage()),
                   );
                 }
               : widget.navigateToLogin,
