@@ -17,8 +17,6 @@ class StudyAPI extends API {
     if (response.statusCode.isOk()) {
       return (jsonDecode(response.body) as List)
           .map((e) => Study.fromJson(e))
-          .toList()
-          .reversed
           .toList();
     }
     return List.empty();
@@ -62,9 +60,7 @@ class StudyAPI extends API {
 
     if (response.statusCode.isOk()) {
       return (jsonDecode(response.body) as List)
-          .map((e) {
-            return Study.fromJson(e);
-          } )
+          .map((e) => Study.fromJson(e))
           .toList();
     }
     return List.empty();
