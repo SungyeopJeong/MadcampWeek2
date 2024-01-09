@@ -59,7 +59,7 @@ class _MainPageState extends State<MainPage> {
                 future: context.read<StudyModel>().studies,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return _buildStudyList(snapshot.data!.reversed.toList());
+                    return _buildStudyList(snapshot.data!);
                   } else if (snapshot.hasError) {
                     debugPrint(snapshot.error.toString());
                     return Column(
