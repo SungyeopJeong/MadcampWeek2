@@ -47,7 +47,8 @@ class _MainPageState extends State<MainPage> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         // 데이터가 있는 경우
-                        return _buildStudyList(snapshot.data!.reversed.toList());
+                        return _buildStudyList(
+                            snapshot.data!.reversed.toList());
                       } else if (snapshot.hasError) {
                         // 에러가 있는 경우
                         return Text('Error: ${snapshot.error}');
@@ -88,9 +89,7 @@ class _MainPageState extends State<MainPage> {
         var study = studies[index];
         return StudyBlock(study: study);
       },
-      separatorBuilder: (context, index) => const SizedBox(
-        width: 20,
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
     );
   }
 }
