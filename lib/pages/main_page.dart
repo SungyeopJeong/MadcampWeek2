@@ -38,12 +38,10 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 10.0,
                   mainAxisSpacing: 10.0,
@@ -52,51 +50,8 @@ class _MainPageState extends State<MainPage> {
                 ),
                 itemCount: 4,
                 shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final isSelected =
-                      selectedCategory == categories[index];
-                  if (isSelected) {
-                    return InkWellBtn(
-                      btnColor: DevilColor.black,
-                      radius: 12,
-                      onTap: () {
-                        setState(() {
-                          selectedCategory = null;
-                        });
-                      },
-                      child: Container(
-                        height: 48,
-                        alignment: Alignment.center,
-                        child: Text(
-                          categories[index].locale,
-                          style: DevilText.bodyM
-                              .copyWith(color: DevilColor.point),
-                        ),
-                      ),
-                    );
-                  }
-                  return InkWellBtn(
-                    btnColor: DevilColor.white,
-                    radius: 12,
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = categories[index];
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: DevilColor.point),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        categories[index].locale,
-                        style: DevilText.bodyM
-                            .copyWith(color: DevilColor.black),
-                      ),
-                    ),
-                  );
-                },
+                itemBuilder: (context, index) =>
+                    _buildCategoryBtn(categories[index]),
               ),
             ),
             Expanded(
@@ -104,14 +59,28 @@ class _MainPageState extends State<MainPage> {
                 future: context.read<StudyModel>().studies,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    // 데이터가 있는 경우
-                    return _buildStudyList(
-                        snapshot.data!.reversed.toList());
+                    return _buildStudyList(snapshot.data!.reversed.toList());
                   } else if (snapshot.hasError) {
-                    // 에러가 있는 경우
-                    return Text('Error: ${snapshot.error}');
+                    debugPrint(snapshot.error.toString());
+                    return Column(
+                      children: [
+                        const Spacer(flex: 1),
+                        const Icon(
+                          Icons.error_rounded,
+                          size: 40,
+                          color: DevilColor.lightgrey,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          '스터디 목록을 불러오지 못했습니다',
+                          style: DevilText.bodyM
+                              .copyWith(color: DevilColor.lightgrey),
+                        ),
+                        const Spacer(flex: 2),
+                      ],
+                    );
                   }
-                
+
                   return const Center(child: CircularProgressIndicator());
                 },
               ),
@@ -132,6 +101,46 @@ class _MainPageState extends State<MainPage> {
               : widget.navigateToLogin,
           backgroundColor: const Color(0xFFFFA8B1),
           child: const Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryBtn(StudyCategory category) {
+    final values = {
+      true: {
+        'btnColor': DevilColor.black,
+        'onTapValue': null,
+        'decoration': null,
+        'textColor': DevilColor.point,
+      },
+      false: {
+        'btnColor': DevilColor.white,
+        'onTapValue': category,
+        'decoration': BoxDecoration(
+          border: Border.all(color: DevilColor.point),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        'textColor': DevilColor.black,
+      },
+    };
+    final isSelected = selectedCategory == category;
+    return InkWellBtn(
+      btnColor: values[isSelected]!['btnColor'] as Color,
+      radius: 12,
+      onTap: () {
+        setState(() {
+          selectedCategory =
+              values[isSelected]!['onTapValue'] as StudyCategory?;
+        });
+      },
+      child: Container(
+        decoration: values[isSelected]!['decoration'] as Decoration?,
+        alignment: Alignment.center,
+        child: Text(
+          category.locale,
+          style: DevilText.bodyM
+              .copyWith(color: values[isSelected]!['textColor'] as Color),
         ),
       ),
     );

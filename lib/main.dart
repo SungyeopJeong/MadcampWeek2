@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onGenerateRoute: (_) => MaterialPageRoute(
                 builder: (_) => const ChatPage(),
               ),
-          
+            ),
             Navigator(
               key: navKeyList[2],
               onGenerateRoute: (_) => MaterialPageRoute(
