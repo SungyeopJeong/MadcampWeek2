@@ -77,7 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator(
               key: navKeyList[0],
               onGenerateRoute: (_) => MaterialPageRoute(
-                builder: (_) => const MainPage(),
+                builder: (_) => MainPage(navigateToLogin: () {
+                  setState(() {
+                    _currentIdx = 2;
+                  });
+                }),
               ),
             ),
             Navigator(
