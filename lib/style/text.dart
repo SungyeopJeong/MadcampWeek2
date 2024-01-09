@@ -18,6 +18,7 @@ class DevilText {
   static final TextStyle titleL = _light.copyWith(fontSize: 20, height: 24 / 20);
 
   static final TextStyle labelM = _medium.copyWith(fontSize: 12, height: 16 / 12);
+  static final TextStyle labelMH = _medium.copyWith(fontSize: 14, height: 18 / 14);
   static final TextStyle bodyM = _medium.copyWith(fontSize: 16, height: 20 / 16);
   static final TextStyle titleM = _medium.copyWith(fontSize: 20, height: 24 / 20);
 

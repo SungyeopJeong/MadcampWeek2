@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:devil/models/study.dart';
 import 'package:devil/services/api.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart';
 
 class StudyAPI extends API {
   const StudyAPI();
 
   String get url => dotenv.get('API_STUDY');
   String get joinUrl => dotenv.get('API_STUDY_JOIN');
+  String get userUrl => dotenv.get('API_USER_STUDY');
 
   Future<List<Study>> getList() async {
     final response = await request(url, HttpMethod.get);
@@ -35,9 +35,7 @@ class StudyAPI extends API {
         'max': study.max.toString(),
         'creatorid': userid,
       },
-    ).timeout(const Duration(seconds: 3), onTimeout: () {
-      return Response("Timeout", 408);
-    });
+    );
 
     return response.statusCode.isOk();
   }
@@ -50,10 +48,25 @@ class StudyAPI extends API {
         'userid': userid,
         'studyid': studyid,
       },
-    ).timeout(const Duration(seconds: 3), onTimeout: () {
-      return Response("Timeout", 408);
-    });
+    );
 
     return response.statusCode.isOk();
+  }
+
+  Future<List<Study>> getMyStudyList(String userid) async {
+    final response = await request(
+      userUrl,
+      HttpMethod.post,
+      body: {'id': userid},
+    );
+
+    if (response.statusCode.isOk()) {
+      return (jsonDecode(response.body) as List)
+          .map((e) {
+            return Study.fromJson(e);
+          } )
+          .toList();
+    }
+    return List.empty();
   }
 }

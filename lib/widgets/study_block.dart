@@ -3,6 +3,7 @@ import 'package:devil/pages/study_detail_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/text.dart';
 import 'package:devil/widgets/inkwell_btn.dart';
+import 'package:devil/widgets/page_route_builder.dart';
 import 'package:flutter/material.dart';
 
 class StudyBlock extends StatelessWidget {
@@ -34,28 +35,7 @@ class StudyBlock extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  StudyDetailPage(
-                study: study!,
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                const begin = Offset(1.0, 0.0);
-                const end = Offset.zero;
-                const curve = Curves.easeInOutQuart;
-                var tween = Tween(begin: begin, end: end).chain(
-                  CurveTween(curve: curve),
-                );
-
-                var offsetAnimation = animation.drive(tween);
-
-                return SlideTransition(
-                  position: offsetAnimation,
-                  child: child,
-                );
-              },
-            ),
+            pageRouteBuilder(page: StudyDetailPage(study: study!)),
           );
         },
         child: Container(

@@ -28,7 +28,6 @@ class StudyModel extends ChangeNotifier {
 
   Future<bool> addStudy(Study study, String userid) async {
     final isAdded = await API.study.addStudy(study, userid);
-    getStudies();
     return isAdded;
   }
 
