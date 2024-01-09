@@ -3,6 +3,7 @@ import 'package:devil/pages/main_page.dart';
 import 'package:devil/pages/my_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/style/theme.dart';
+import 'package:devil/viewmodels/chat_model.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => InfoModel()),
         ChangeNotifierProvider(create: (_) => StudyModel()),
+        ChangeNotifierProvider(create: (_) => ChatModel()),
       ],
       child: MaterialApp(
         title: 'DeVil',
@@ -62,7 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final islogined = context.read<InfoModel>().isLogined;
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -103,7 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: BottomNavigationBar(
           onTap: (idx) {
             setState(() {
-              _currentIdx = idx;
+              if (idx == 1 && !context.read<InfoModel>().isLogined) {
+                _currentIdx = 2;
+              } else {
+                _currentIdx = idx;
+              }
             });
           },
           showSelectedLabels: false,
