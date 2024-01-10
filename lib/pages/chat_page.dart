@@ -6,7 +6,13 @@ import 'package:devil/widgets/top_app_bar.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  ChatPage({
+    super.key,
+    required this.userid,
+    required this.studyid,
+  });
+  String userid;
+  int studyid;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -48,7 +54,7 @@ class _ChatPageState extends State<ChatPage> {
                           content: _chatController.text,
                         ),
                       ),
-                  child: Text("send"),
+                  child: const Text("send"),
                 ),
               ],
             ),
@@ -56,12 +62,12 @@ class _ChatPageState extends State<ChatPage> {
               onPressed: () => context
                   .read<ChatModel>()
                   .getMyChat(context.read<InfoModel>().user.id),
-              child: Text("refresh"),
+              child: const Text("refresh"),
             ),
           ],
         ),
       );
     }
-    return Text("not yet");
+    return const Text("not yet");
   }
 }
