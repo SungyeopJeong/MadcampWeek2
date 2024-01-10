@@ -3,10 +3,10 @@
 import 'dart:convert';
 
 import 'package:devil/models/study.dart';
-import 'package:devil/pages/my_page.dart';
 import 'package:devil/style/color.dart';
 import 'package:devil/viewmodels/info_model.dart';
-import 'package:devil/viewmodels/study_model.dart';
+import 'package:devil/widgets/pop_up.dart';
+import 'package:devil/widgets/show_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -216,72 +216,31 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                                 sendPostRequest(
                                     context.read<InfoModel>().user.id,
                                     widget.study.id!);
-                                showDialog(
+
+                                context.read<InfoModel>().getMyStudies();
+
+                                showModal(
                                   context: context,
-                                  builder: (BuildContext alertContext) {
-                                    return AlertDialog(
-                                      title: const Text("참여되었습니다"),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(alertContext).pop();
-                                            Navigator.pop(context);
-                                          },
-                                          style: TextButton.styleFrom(
-                                            textStyle: const TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                            backgroundColor: DevilColor.point,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 20, vertical: 20),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                          child: const Text("확인"),
-                                        ),
-                                      ],
-                                    );
-                                  },
+                                  builder: (_) => PopUp(
+                                    msg: '참여되었습니다',
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
                                 );
                               }
                             : (iscreator)
                                 ? () {
                                     print("삭제하기 클릭");
                                     deleteStudy(widget.study.id);
-                                    showDialog(
+                                    showModal(
                                       context: context,
-                                      builder: (BuildContext alertContext) {
-                                        return AlertDialog(
-                                          title: const Text("스터디가 삭제되었습니다."),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(alertContext)
-                                                    .pop();
-                                                Navigator.pop(context);
-                                              },
-                                              style: TextButton.styleFrom(
-                                                textStyle: const TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                                backgroundColor:
-                                                    DevilColor.point,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 20),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              child: const Text("확인"),
-                                            ),
-                                          ],
-                                        );
-                                      },
+                                      builder: (_) => PopUp(
+                                        msg: '스터디가 삭제되었습니다.',
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
                                     );
                                   }
                                 : () {
