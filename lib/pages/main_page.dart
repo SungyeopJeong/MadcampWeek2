@@ -107,7 +107,6 @@ class _MainPageState extends State<MainPage> {
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 16), // Adjust content padding
-                        // Add margin around the TextField
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               color:
