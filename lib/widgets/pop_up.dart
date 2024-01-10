@@ -20,7 +20,7 @@ class PopUp extends StatelessWidget {
           EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -8,8 +8,8 @@ class ChatModel extends ChangeNotifier {
   late SocketService _socketService;
   SocketService get socketService => _socketService;
 
-  late List<Chat> _myChat;
-  List<Chat> get myChat => _myChat;
+  final Map<Study, List<Chat>> _myChat = {};
+  Map<Study, List<Chat>> get myChat => _myChat;
 
   ChatModel() {
     _socketService = SocketService();
@@ -19,21 +19,26 @@ class ChatModel extends ChangeNotifier {
     _socketService.connect();
     _socketService.on('init', (data) {
       if ((data['statusCode'] as int).isOk()) {
-        _myChat = (data['body'] as List)
-            .map((e) => Chat.fromJson(/*userid*/ '7', e))
+        final chatList = (data['body'] as List)
+            .map((e) => Chat.fromJson(userid, e))
             .toList();
+        for (final study in studies) {
+          _myChat[study] = chatList.where((element) => element.studyId == study.id).toList();
+        }
         notifyListeners();
       }
     });
     _socketService.on('study0', (data) {
-      _myChat.add(Chat.fromJson(userid, data));
+      final chat = Chat.fromJson(userid, data);
+      final study = studies.firstWhere((element) => element.id == chat.studyId);
+      _myChat[study] = _myChat[study]! + [chat];
       notifyListeners();
     });
     getMyChat(userid);
   }
 
   void getMyChat(String userid) {
-    _socketService.emit('get', /*userid*/ '7');
+    _socketService.emit('get', userid);
   }
 
   void send(ChatToSend chat) async {
