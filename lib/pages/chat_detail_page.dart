@@ -109,7 +109,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const Spacer(),
-                Text(DateFormat('a h:mm', 'ko').format(chat.timestamp)),
+                Text(
+                  DateFormat('a h:mm', 'ko').format(chat.timestamp),
+                  style: DevilText.labelLS,
+                ),
                 const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
