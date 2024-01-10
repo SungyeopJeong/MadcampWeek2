@@ -93,9 +93,17 @@ class _MyHomePageState extends State<MyHomePage> {
               key: navKeyList[0],
               onGenerateRoute: (_) => MaterialPageRoute(
                 builder: (_) => MainPage(navigateToLogin: () {
-                  setState(() {
-                    _currentIdx = 2;
-                  });
+                  showModal(
+                    context: context,
+                    builder: (_) => PopUp(
+                      msg: '로그인 후 이용 가능합니다.',
+                      onTap: () {
+                        setState(() {
+                          _currentIdx = 2;
+                        });
+                      },
+                    ),
+                  );
                 }),
               ),
             ),
@@ -106,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   navigateToDetail: (study) {
                     Navigator.push(
                       context,
-                      pageRouteBuilder(page: ChatDetailPage(study: study))
+                      pageRouteBuilder(page: ChatDetailPage(study: study)),
                     );
                   },
                 ),
