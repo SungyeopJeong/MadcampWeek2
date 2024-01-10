@@ -7,6 +7,8 @@ import 'package:devil/style/theme.dart';
 import 'package:devil/viewmodels/chat_model.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
+import 'package:devil/widgets/pop_up.dart';
+import 'package:devil/widgets/show_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -104,13 +106,23 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           onTap: (idx) {
-            setState(() {
-              if (idx == 1 && !context.read<InfoModel>().isLogined) {
-                _currentIdx = 2;
-              } else {
+            if (idx == 1 && !context.read<InfoModel>().isLogined) {
+              showModal(
+                context: context,
+                builder: (_) => PopUp(
+                  msg: '로그인 후 이용 가능합니다.',
+                  onTap: () {
+                    setState(() {
+                      _currentIdx = 2;
+                    });
+                  },
+                ),
+              );
+            } else {
+              setState(() {
                 _currentIdx = idx;
-              }
-            });
+              });
+            }
           },
           showSelectedLabels: false,
           showUnselectedLabels: false,

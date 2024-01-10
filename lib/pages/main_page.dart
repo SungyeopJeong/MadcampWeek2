@@ -6,6 +6,8 @@ import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
 import 'package:devil/widgets/inkwell_btn.dart';
 import 'package:devil/widgets/page_route_builder.dart';
+import 'package:devil/widgets/pop_up.dart';
+import 'package:devil/widgets/show_modal.dart';
 import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:devil/widgets/study_block.dart';
@@ -97,7 +99,15 @@ class _MainPageState extends State<MainPage> {
                     pageRouteBuilder(page: const StudyAddPage()),
                   );
                 }
-              : widget.navigateToLogin,
+              : () {
+                  showModal(
+                    context: context,
+                    builder: (_) => PopUp(
+                      msg: '로그인 후 이용 가능합니다.',
+                      onTap: () => widget.navigateToLogin(),
+                    ),
+                  );
+                },
           backgroundColor: const Color(0xFFFFA8B1),
           child: const Icon(Icons.add),
         ),
