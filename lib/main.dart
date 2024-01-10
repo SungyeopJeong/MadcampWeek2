@@ -103,10 +103,10 @@ class _MyHomePageState extends State<MyHomePage> {
               key: navKeyList[1],
               onGenerateRoute: (_) => MaterialPageRoute(
                 builder: (_) => ChatPage(
-                  navigateToDetail: (studyChat) {
+                  navigateToDetail: (study) {
                     Navigator.push(
                       context,
-                      pageRouteBuilder(page: ChatDetailPage(studyChat: studyChat))
+                      pageRouteBuilder(page: ChatDetailPage(study: study))
                     );
                   },
                 ),

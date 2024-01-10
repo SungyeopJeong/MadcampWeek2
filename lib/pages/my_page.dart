@@ -37,11 +37,6 @@ class MyPage extends StatelessWidget {
             FutureBuilder(
               future: context.watch<InfoModel>().myStudies,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  context
-                      .read<ChatModel>()
-                      .init(context.read<InfoModel>().user.id, snapshot.data!);
-                }
                 return _buildStudyList(context, "가입한 스터디", snapshot.data ?? []);
               },
             ),
@@ -242,6 +237,10 @@ class MyPage extends StatelessWidget {
                 ),
               ),
             );
+          } else {
+            final userid = context.read<InfoModel>().user.id;
+            context.read<ChatModel>().init(userid);
+            context.read<ChatModel>().getMyChat(userid);
           }
         });
       },
