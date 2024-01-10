@@ -1,3 +1,4 @@
+import 'package:devil/pages/chat_list_page.dart';
 import 'package:devil/pages/chat_page.dart';
 import 'package:devil/pages/main_page.dart';
 import 'package:devil/pages/my_page.dart';
@@ -90,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator(
               key: navKeyList[1],
               onGenerateRoute: (_) => MaterialPageRoute(
-                builder: (_) => const ChatPage(),
+                builder: (_) => const ChatList(),
               ),
             ),
             Navigator(

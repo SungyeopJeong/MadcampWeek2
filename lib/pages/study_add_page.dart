@@ -5,6 +5,7 @@ import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
 import 'package:devil/widgets/top_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class StudyAddPage extends StatefulWidget {
@@ -20,6 +21,18 @@ class _StudyAddState extends State<StudyAddPage> {
   final TextEditingController _participantsController = TextEditingController();
   bool isEmpty = false;
   StudyCategory? selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    _participantsController.addListener(checkInput);
+  }
+
+  void checkInput() {
+    setState(() {
+      isEmpty = _participantsController.text.isNotEmpty;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,12 +155,14 @@ class _StudyAddState extends State<StudyAddPage> {
               const SizedBox(height: 18.0),
               TextField(
                 controller: _participantsController,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (value) {
                   setState(() {
                     isEmpty = _studyNameController.text.isNotEmpty &&
                         selectedCategory != null &&
                         _descriptionController.text.isNotEmpty &&
                         _participantsController.text.isNotEmpty;
+                    checkInput();
                   });
                 },
                 decoration: InputDecoration(

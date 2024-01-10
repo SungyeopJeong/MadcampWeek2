@@ -18,7 +18,7 @@ class User {
       id: json['id'],
       platform: LoginPlatform.byName(json['platform']),
       displayName: json['username'],
-      profileUrl: json['profileUrl'],
+      profileUrl: json['profileUrl'] ?? '',
     );
   }
 }

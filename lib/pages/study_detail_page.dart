@@ -72,7 +72,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
       Map<String, dynamic> data = {'id': userId};
 
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:3000/api/study/$studyId"),
+        Uri.parse("http://172.10.7.49/api/study/$studyId"),
         body: data,
       );
       if (response.statusCode == 200) {
