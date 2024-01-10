@@ -17,7 +17,7 @@ class Chat {
       name: json['username'],
       studyId: json['studyid'],
       content: json['content'],
-      timestamp: DateTime.parse(json['timestamp']),
+      timestamp: DateTime.parse(json['timestamp']).toLocal(),
       isMine: json['userid'] == myId ? true : false,
     );
   }
