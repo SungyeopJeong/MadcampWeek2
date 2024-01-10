@@ -14,7 +14,7 @@
 ### ⚡ 개발 환경
 
 - **FE** - flutter
-- **BE** - nodejs(express), mysql
+- **BE** - nodejs(express), mysql (https://github.com/SungyeopJeong/DeVil-Server)
 
 ---
 
