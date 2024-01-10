@@ -24,11 +24,27 @@ StudyCategory? selectedCategory;
 
 class _MainPageState extends State<MainPage> {
   StudyCategory? selectedCategory;
+  String searchText = "";
+  FocusNode searchFocus = FocusNode();
+  bool btnVisible = true;
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    searchFocus.addListener(() {
+      setState(() {
+        btnVisible = !searchFocus.hasFocus;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final islogined = context.read<InfoModel>().isLogined;
     const categories = StudyCategory.values;
+
     return RefreshIndicator(
       onRefresh: () async {
         context.read<StudyModel>().getStudies();
@@ -39,22 +55,68 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 4,
-                  mainAxisExtent: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: TextField(
+                focusNode: searchFocus,
+                controller: searchController,
+                decoration: const InputDecoration(
+                  hintText: '검색어를 입력해주세요.',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Colors.red), // Change the border color
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 16), // Adjust content padding
+                  // Add margin around the TextField
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: DevilColor.point), // Change the border color
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(12)), // Adjust border radius
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: DevilColor.point), // Change the border color
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(12)), // Adjust border radius
+                  ),
+                  prefixIcon: Icon(Icons.search, color: DevilColor.point),
                 ),
-                itemCount: 4,
-                shrinkWrap: true,
-                itemBuilder: (context, index) =>
-                    _buildCategoryBtn(categories[index]),
+                onChanged: (value) {
+                  setState(() {
+                    searchText = value;
+                  });
+                },
+                onSubmitted: (value) {
+                  setState(() {
+                    searchText = "";
+                    searchController.clear();
+                  });
+                  FocusScope.of(context).unfocus();
+                },
               ),
             ),
+            btnVisible
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                        childAspectRatio: 4,
+                        mainAxisExtent: 48,
+                      ),
+                      itemCount: 4,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) =>
+                          _buildCategoryBtn(categories[index]),
+                    ),
+                  )
+                : Container(),
             Expanded(
               child: FutureBuilder(
                 future: context.watch<StudyModel>().studies,
@@ -88,19 +150,21 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          onPressed: islogined
-              ? () {
-                  Navigator.push(
-                    context,
-                    pageRouteBuilder(page: const StudyAddPage()),
-                  );
-                }
-              : widget.navigateToLogin,
-          backgroundColor: const Color(0xFFFFA8B1),
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: btnVisible
+            ? FloatingActionButton(
+                shape: const CircleBorder(),
+                onPressed: islogined
+                    ? () {
+                        Navigator.push(
+                          context,
+                          pageRouteBuilder(page: const StudyAddPage()),
+                        );
+                      }
+                    : widget.navigateToLogin,
+                backgroundColor: const Color(0xFFFFA8B1),
+                child: const Icon(Icons.add),
+              )
+            : null,
       ),
     );
   }
@@ -154,6 +218,13 @@ class _MainPageState extends State<MainPage> {
           .toList();
     } else {
       filteredStudies = studies;
+    }
+
+    if (searchText.isNotEmpty) {
+      filteredStudies = filteredStudies
+          .where((study) =>
+              study.name.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
     }
 
     return ListView.separated(
