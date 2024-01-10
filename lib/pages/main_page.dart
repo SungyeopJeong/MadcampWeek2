@@ -27,11 +27,39 @@ StudyCategory? selectedCategory;
 
 class _MainPageState extends State<MainPage> {
   StudyCategory? selectedCategory;
+  String searchText = "";
+  String submitedText = "";
+  FocusNode searchFocus = FocusNode();
+  bool btnVisible = true;
+  bool issumbit = false;
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    searchFocus.addListener(() {
+      setState(() {
+        btnVisible = !searchFocus.hasFocus;
+      });
+    });
+  }
+
+  void resetSearch() {
+    setState(() {
+      searchText = "";
+      submitedText = "";
+      issumbit = false;
+      searchController.clear();
+      FocusScope.of(context).unfocus();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final islogined = context.read<InfoModel>().isLogined;
     const categories = StudyCategory.values;
+
     return RefreshIndicator(
       onRefresh: () async {
         context.read<StudyModel>().getStudies();
@@ -41,23 +69,100 @@ class _MainPageState extends State<MainPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 4,
-                  mainAxisExtent: 48,
-                ),
-                itemCount: 4,
-                shrinkWrap: true,
-                itemBuilder: (context, index) =>
-                    _buildCategoryBtn(categories[index]),
-              ),
-            ),
+            issumbit
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () {
+                            resetSearch();
+                          },
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Text(
+                        "전체 보기",
+                        style: TextStyle(
+                          color: DevilColor.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+            issumbit
+                ? Container()
+                : Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: TextField(
+                      focusNode: searchFocus,
+                      controller: searchController,
+                      decoration: const InputDecoration(
+                        hintText: '검색어를 입력해주세요.',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.red), // Change the border color
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 16), // Adjust content padding
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  DevilColor.point), // Change the border color
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(12)), // Adjust border radius
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  DevilColor.point), // Change the border color
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(12)), // Adjust border radius
+                        ),
+                        prefixIcon: Icon(Icons.search, color: DevilColor.point),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                      },
+                      onSubmitted: (value) {
+                        setState(() {
+                          submitedText = searchText;
+                          searchText = "";
+                          searchController.clear();
+                          issumbit = true;
+                        });
+                        FocusScope.of(context).unfocus();
+                      },
+                    ),
+                  ),
+            btnVisible && !issumbit
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                        childAspectRatio: 4,
+                        mainAxisExtent: 48,
+                      ),
+                      itemCount: 4,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) =>
+                          _buildCategoryBtn(categories[index]),
+                    ),
+                  )
+                : Container(),
             Expanded(
               child: FutureBuilder(
                 future: context.watch<StudyModel>().studies,
@@ -75,27 +180,21 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          onPressed: islogined
-              ? () {
-                  Navigator.push(
-                    context,
-                    pageRouteBuilder(page: const StudyAddPage()),
-                  );
-                }
-              : () {
-                  showModal(
-                    context: context,
-                    builder: (_) => PopUp(
-                      msg: '로그인 후 이용 가능합니다.',
-                      onTap: () => widget.navigateToLogin(),
-                    ),
-                  );
-                },
-          backgroundColor: const Color(0xFFFFA8B1),
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: btnVisible
+            ? FloatingActionButton(
+                shape: const CircleBorder(),
+                onPressed: islogined
+                    ? () {
+                        Navigator.push(
+                          context,
+                          pageRouteBuilder(page: const StudyAddPage()),
+                        );
+                      }
+                    : widget.navigateToLogin,
+                backgroundColor: const Color(0xFFFFA8B1),
+                child: const Icon(Icons.add),
+              )
+            : null,
       ),
     );
   }
@@ -149,6 +248,20 @@ class _MainPageState extends State<MainPage> {
           .toList();
     } else {
       filteredStudies = studies;
+    }
+
+    if (searchText.isNotEmpty) {
+      filteredStudies = filteredStudies
+          .where((study) =>
+              study.name.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    }
+
+    if (issumbit) {
+      filteredStudies = filteredStudies
+          .where((study) =>
+              study.name.toLowerCase().contains(submitedText.toLowerCase()))
+          .toList();
     }
 
     return ListView.separated(

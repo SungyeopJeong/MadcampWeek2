@@ -27,6 +27,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
   List userList = [];
   bool isme = false;
   String creatorName = "";
+  bool iscreator = false;
 
   @override
   void initState() {
@@ -61,13 +62,13 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
 
     if (islogined) {
       final user = context.read<InfoModel>().user;
-      await getUserData(user.id, widget.study.id!);
+      await getUserData(user.id, widget.study.id!, user.displayName);
     } else {
-      getUserData("", widget.study.id!);
+      getUserData("", widget.study.id!, "");
     }
   }
 
-  Future<void> getUserData(userId, int studyId) async {
+  Future<void> getUserData(userId, int studyId, String username) async {
     try {
       Map<String, dynamic> data = {'id': userId};
 
@@ -86,17 +87,33 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
             if (user['iscreator'] == 1) {
               creatorName = user['username'];
             }
+            if (user['isme'] == 1 && user['iscreator'] == 1) {
+              iscreator = true;
+            }
           }
         });
-        print(userList);
-        print(isme);
-        print(creatorName);
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
     } catch (e) {
       print('Error during POST request: $e');
+    }
+    print("iscreator:$iscreator");
+  }
+
+  Future<void> deleteStudy(studyId) async {
+    try {
+      final response =
+          await http.delete(Uri.parse("http://172.10.7.49/api/study/$studyId"));
+      if (response.statusCode == 200) {
+        print('DELETE 요청이 성공하였습니다.');
+      } else {
+        print('DELETE 요청이 실패하였습니다. 상태 코드: ${response.statusCode}');
+        print('응답 내용: ${response.body}');
+      }
+    } catch (e) {
+      print('Error during DELETE request: $e');
     }
   }
 
@@ -229,12 +246,52 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                                   },
                                 );
                               }
-                            : () {
-                                Navigator.pop(context);
-                              },
+                            : (iscreator)
+                                ? () {
+                                    print("삭제하기 클릭");
+                                    deleteStudy(widget.study.id);
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext alertContext) {
+                                        return AlertDialog(
+                                          title: const Text("스터디가 삭제되었습니다."),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(alertContext)
+                                                    .pop();
+                                                Navigator.pop(context);
+                                              },
+                                              style: TextButton.styleFrom(
+                                                textStyle: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                                backgroundColor:
+                                                    DevilColor.point,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 20,
+                                                        vertical: 20),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              child: const Text("확인"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                : () {
+                                    Navigator.pop(context);
+                                  },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: islogined
-                              ? (isme ? DevilColor.grey : DevilColor.black)
+                              ? iscreator
+                                  ? Colors.red
+                                  : (isme ? DevilColor.grey : DevilColor.black)
                               : DevilColor.grey,
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 40),
@@ -245,7 +302,11 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                         ),
                         child: Text(
                           islogined
-                              ? (isme ? '이미 참여중인 스터디입니다' : '참여하기')
+                              ? (iscreator
+                                  ? '삭제하기'
+                                  : isme
+                                      ? '이미 참여중인 스터디입니다'
+                                      : '참여하기')
                               : '로그인 후 이용하세요',
                           style: const TextStyle(
                             fontSize: 18,

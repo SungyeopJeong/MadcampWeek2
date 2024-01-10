@@ -183,7 +183,7 @@ class _StudyAddState extends State<StudyAddPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: (isEmpty)
+                    onPressed: (isEmpty && selectedCategory != null)
                         ? () async {
                             final study = Study(
                               name: _studyNameController.text,
