@@ -28,7 +28,6 @@ class InfoModel extends ChangeNotifier {
 
   Future<void> getMyStudies() async {
     _myStudies = API.study.getMyStudyList(_user.id);
-    print(await API.study.getMyStudyList(_user.id));
     notifyListeners();
   }
 

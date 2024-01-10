@@ -22,7 +22,7 @@ class StudyAPI extends API {
     return List.empty();
   }
 
-  Future<bool> addStudy(Study study, String userid) async {
+  Future<int> addStudy(Study study, String userid) async {
     final response = await request(
       url,
       HttpMethod.post,
@@ -35,7 +35,10 @@ class StudyAPI extends API {
       },
     );
 
-    return response.statusCode.isOk();
+    if (response.statusCode.isOk()) {
+      return int.parse(response.body);
+    }
+    return -1;
   }
 
   Future joinStudy(String userid, int studyid) async {

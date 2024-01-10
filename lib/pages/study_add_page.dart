@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:devil/models/study.dart';
+import 'package:devil/viewmodels/chat_model.dart';
 import 'package:devil/viewmodels/info_model.dart';
 import 'package:devil/viewmodels/study_model.dart';
 import 'package:devil/widgets/top_app_bar.dart';
@@ -196,8 +197,12 @@ class _StudyAddState extends State<StudyAddPage> {
                             _descriptionController.clear();
                             _participantsController.clear();
 
-                            if (await context.read<StudyModel>().addStudy(
-                                study, context.read<InfoModel>().user.id)) {
+                            final studyid = await context
+                                .read<StudyModel>()
+                                .addStudy(
+                                    study, context.read<InfoModel>().user.id);
+
+                            if (studyid != -1) {
                               debugPrint('study added');
                               context.read<StudyModel>().getStudies();
                               context.read<InfoModel>().getMyStudies();
