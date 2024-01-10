@@ -25,8 +25,10 @@ StudyCategory? selectedCategory;
 class _MainPageState extends State<MainPage> {
   StudyCategory? selectedCategory;
   String searchText = "";
+  String submitedText = "";
   FocusNode searchFocus = FocusNode();
   bool btnVisible = true;
+  bool issumbit = false;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -37,6 +39,16 @@ class _MainPageState extends State<MainPage> {
       setState(() {
         btnVisible = !searchFocus.hasFocus;
       });
+    });
+  }
+
+  void resetSearch() {
+    setState(() {
+      searchText = "";
+      submitedText = "";
+      issumbit = false;
+      searchController.clear();
+      FocusScope.of(context).unfocus();
     });
   }
 
@@ -54,49 +66,81 @@ class _MainPageState extends State<MainPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: TextField(
-                focusNode: searchFocus,
-                controller: searchController,
-                decoration: const InputDecoration(
-                  hintText: '검색어를 입력해주세요.',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.red), // Change the border color
+            issumbit
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () {
+                            resetSearch();
+                          },
+                          color: Colors.black,
+                        ),
+                      ),
+                      const Text(
+                        "전체 보기",
+                        style: TextStyle(
+                          color: DevilColor.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+            issumbit
+                ? Container()
+                : Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: TextField(
+                      focusNode: searchFocus,
+                      controller: searchController,
+                      decoration: const InputDecoration(
+                        hintText: '검색어를 입력해주세요.',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.red), // Change the border color
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 16), // Adjust content padding
+                        // Add margin around the TextField
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  DevilColor.point), // Change the border color
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(12)), // Adjust border radius
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  DevilColor.point), // Change the border color
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(12)), // Adjust border radius
+                        ),
+                        prefixIcon: Icon(Icons.search, color: DevilColor.point),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                      },
+                      onSubmitted: (value) {
+                        setState(() {
+                          submitedText = searchText;
+                          searchText = "";
+                          searchController.clear();
+                          issumbit = true;
+                        });
+                        FocusScope.of(context).unfocus();
+                      },
+                    ),
                   ),
-                  contentPadding: EdgeInsets.symmetric(
-                      vertical: 10, horizontal: 16), // Adjust content padding
-                  // Add margin around the TextField
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: DevilColor.point), // Change the border color
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(12)), // Adjust border radius
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: DevilColor.point), // Change the border color
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(12)), // Adjust border radius
-                  ),
-                  prefixIcon: Icon(Icons.search, color: DevilColor.point),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    searchText = value;
-                  });
-                },
-                onSubmitted: (value) {
-                  setState(() {
-                    searchText = "";
-                    searchController.clear();
-                  });
-                  FocusScope.of(context).unfocus();
-                },
-              ),
-            ),
-            btnVisible
+            btnVisible && !issumbit
                 ? Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
@@ -224,6 +268,13 @@ class _MainPageState extends State<MainPage> {
       filteredStudies = filteredStudies
           .where((study) =>
               study.name.toLowerCase().contains(searchText.toLowerCase()))
+          .toList();
+    }
+
+    if (issumbit) {
+      filteredStudies = filteredStudies
+          .where((study) =>
+              study.name.toLowerCase().contains(submitedText.toLowerCase()))
           .toList();
     }
 
